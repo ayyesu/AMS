@@ -1,4 +1,3 @@
-import * as React from 'react'
 import OrbitingCircles from "./ui/orbiting-circles";
 import { AttendanceSvg } from '@/assets/svg/attendanceSvg';
 import { UgSvg } from '@/assets/svg/ugSvg';
@@ -51,4 +50,3 @@ export function SignInOrbit() {
     </div>
   );
 }
-

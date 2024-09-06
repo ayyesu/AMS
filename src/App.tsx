@@ -1,14 +1,10 @@
-import * as React from 'react'
-import './App.css'
-import SignIn from './pages/SignIn'
+import AppProvider from './providers';
+import AppRouter from './routes';
 
-function App() {
-
+export default function App() {
   return (
-    <>
-      <SignIn />
-    </>
-  )
+    <AppProvider>
+      <AppRouter />
+    </AppProvider>
+  );
 }
-
-export default App
