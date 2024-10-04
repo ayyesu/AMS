@@ -21,87 +21,99 @@ export const navItems: NavItem[] = [
   }
 ];
 
-export const users = [
+export const courses = [
   {
     id: 1,
+    course_code: 'DCIT308',
+    path: '/course-detail/DCIT308',
     name: 'Data Structures and Algorithm II',
-    Semester: '2',
+    semester: '2',
     academic_year: '2023/2024',
     status: 'Active'
+  },
+  {
+    id: 2,
+    course_code: 'DCIT309',
+    path: '/course-detail/DCIT309',
+    name: 'Database Programming',
+    semester: '1',
+    academic_year: '2023/2024',
+    status: 'Active'
+  },
+  {
+    id: 3,
+    course_code: 'DCIT202',
+    path: '/course-detail/DCIT202',
+    name: 'Mobile Application Development',
+    semester: '2',
+    academic_year: '2023/2024',
+    status: 'Active'
+  },
+  {
+    id: 4,
+    course_code: 'DCIT201',
+    path: '/course-detail/DCIT201',
+    name: 'Operating Systems',
+    semester: '1',
+    academic_year: '2022/2023',
+    status: 'Inactive'
+  },
+  {
+    id: 5,
+    course_code: 'DCIT203',
+    path: '/course-detail/DCIT203',
+    name: 'Computer Networks',
+    semester: '2',
+    academic_year: '2022/2023',
+    status: 'Active'
+  },
+  {
+    id: 6,
+    course_code: 'DCIT204',
+    path: '/course-detail/DCIT204',
+    name: 'Machine Learning',
+    semester: '1',
+    academic_year: '2023/2024',
+    status: 'Active'
+  },
+  {
+    id: 7,
+    course_code: 'DCIT205',
+    path: '/course-detail/DCIT205',
+    name: 'Network Security',
+    semester: '1',
+    academic_year: '2023/2024',
+    status: 'Active'
+  },
+  {
+    id: 8,
+    course_code: 'DCIT208',
+    path: '/course-detail/DCIT208',
+    name: 'Software Engineering',
+    semester: '2',
+    academic_year: '2023/2024',
+    status: 'Active'
+  },
+  {
+    id: 9,
+    course_code: 'DCIT207',
+    path: '/course-detail/DCIT207',
+    name: 'Web Development',
+    semester: '1',
+    academic_year: '2023/2024',
+    status: 'Active'
+  },
+  {
+    id: 10,
+    course_code: 'DCIT206',
+    path: '/course-detail/DCIT206',
+    name: 'Data Science',
+    semester: '1',
+    academic_year: '2022/2023',
+    status: 'Inactive'
   }
-  // {
-  //   id: 2,
-  //   name: 'John Doe',
-  //   company: 'TechCorp',
-  //   role: 'Backend Developer',
-  //   verified: true,
-  //   status: 'Active'
-  // },
-  // {
-  //   id: 3,
-  //   name: 'Alice Johnson',
-  //   company: 'WebTech',
-  //   role: 'UI Designer',
-  //   verified: true,
-  //   status: 'Active'
-  // },
-  // {
-  //   id: 4,
-  //   name: 'David Smith',
-  //   company: 'Innovate Inc.',
-  //   role: 'Fullstack Developer',
-  //   verified: false,
-  //   status: 'Inactive'
-  // },
-  // {
-  //   id: 5,
-  //   name: 'Emma Wilson',
-  //   company: 'TechGuru',
-  //   role: 'Product Manager',
-  //   verified: true,
-  //   status: 'Active'
-  // },
-  // {
-  //   id: 6,
-  //   name: 'James Brown',
-  //   company: 'CodeGenius',
-  //   role: 'QA Engineer',
-  //   verified: false,
-  //   status: 'Active'
-  // },
-  // {
-  //   id: 7,
-  //   name: 'Laura White',
-  //   company: 'SoftWorks',
-  //   role: 'UX Designer',
-  //   verified: true,
-  //   status: 'Active'
-  // },
-  // {
-  //   id: 8,
-  //   name: 'Michael Lee',
-  //   company: 'DevCraft',
-  //   role: 'DevOps Engineer',
-  //   verified: false,
-  //   status: 'Active'
-  // },
-  // {
-  //   id: 9,
-  //   name: 'Olivia Green',
-  //   company: 'WebSolutions',
-  //   role: 'Frontend Developer',
-  //   verified: true,
-  //   status: 'Active'
-  // },
-  // {
-  //   id: 10,
-  //   name: 'Robert Taylor',
-  //   company: 'DataTech',
-  //   role: 'Data Analyst',
-  //   verified: false,
-  //   status: 'Active'
-  // }
 ];
+
 
 export const dashboardCard = [
   {

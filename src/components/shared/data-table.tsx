@@ -31,16 +31,22 @@ import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 
+interface Identifiable {
+  id: string | number; 
+}
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  path: string;
   pageSizeOptions?: number[];
   pageCount: number;
 }
 
-export default function DataTable<TData, TValue>({
+export default function DataTable<TData extends Identifiable, TValue>({
   columns,
   data,
+  path,
   pageCount,
   pageSizeOptions = [10, 20, 30, 40, 50]
 }: DataTableProps<TData, TValue>) {
@@ -112,7 +118,11 @@ export default function DataTable<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
+                  onClick={() =>
+                    window.location.href = path + '/' + row.original.id 
+                  }
                   data-state={row.getIsSelected() && 'selected'}
+                  className='hover:cursor-pointer' // Fixed className spacing
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -142,7 +152,7 @@ export default function DataTable<TData, TValue>({
       <div className="flex flex-col items-center justify-end gap-2 space-x-2 py-4 sm:flex-row">
         <div className="flex w-full items-center justify-between">
           <div className="flex-1 text-sm text-muted-foreground">
-            {table.getFilteredSelectedRowModel().rows.length} of{' '}
+            {table.getFilteredSelectedRowModel().rows?.length || 0} of{' '}
             {table.getFilteredRowModel().rows.length} row(s) selected.
           </div>
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-6 lg:gap-8">

@@ -4,6 +4,7 @@ import CoursesTable from './components/courses-table';
 import { useSearchParams } from 'react-router-dom';
 import { DataTableSkeleton } from '@/components/shared/data-table-skeleton';
 import { Breadcrumbs } from '@/components/shared/breadcrumbs';
+import { courses } from '@/constants/data';
 
 export default function StudentPage() {
   const [searchParams] = useSearchParams();
@@ -12,7 +13,7 @@ export default function StudentPage() {
   const search = searchParams.get('search') || null;
   const offset = (page - 1) * pageLimit;
   const { data, isLoading } = useGetCourses(offset, pageLimit, search);
-  const courses = data?.courses;
+  //const courses = data?.courses;
   const totalCourses = data?.total_courses; //1000
   const pageCount = Math.ceil(totalCourses / pageLimit);
 
@@ -38,9 +39,9 @@ export default function StudentPage() {
         ]}
       />
       <CoursesTable
-        users={courses}
+        courses={courses}
         page={page}
-        totalUsers={totalCourses}
+        totalUsers={courses.length}
         pageCount={pageCount}
       />
     </div>
