@@ -30,7 +30,11 @@ export default function CourseDetailPage() {
   };
 
   if (isLoading) {
-    return <h1>Loading!!!</h1>;
+    return (
+      <div className='flex justify-center items-center h-screen'>
+        <h1>Loading!!!</h1>
+      </div>
+    )
   }
 
   return (
