@@ -17,7 +17,7 @@ export default function CourseFeedTable({
     <>
       <CourseTableActions />
       {users && (
-        <DataTable columns={columns} data={users} pageCount={pageCount} />
+        <DataTable columns={columns} data={users} pageCount={pageCount} path={''} />
       )}
     </>
   );
