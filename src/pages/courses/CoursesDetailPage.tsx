@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { useRouter } from '@/routes/hooks';
+import { useNavigate } from 'react-router-dom';
 import {
   ChevronLeftIcon,
   PlusCircleIcon,
@@ -15,7 +15,7 @@ import {
 import Heading from '@/components/shared/heading';
 
 export default function CourseSessionPage() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const [sessions, setSessions] = useState([
     {
       id: 1,
@@ -52,7 +52,7 @@ export default function CourseSessionPage() {
   });
 
   useEffect(() => {
-    if (navigator.geolocation) {
+    if (typeof window !== 'undefined' && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           setCurrentLocation({
@@ -69,10 +69,13 @@ export default function CourseSessionPage() {
 
   const handleAddSession = () => {
     if (newSession.topic && newSession.date && newSession.time) {
-      setSessions([...sessions, {
-        id: sessions.length + 1,
-        ...newSession
-      }]);
+      setSessions((prevSessions) => [
+        ...prevSessions,
+        {
+          id: prevSessions.length + 1,
+          ...newSession
+        }
+      ]);
       setNewSession({
         topic: "",
         date: "",
@@ -125,7 +128,7 @@ export default function CourseSessionPage() {
             <PlusCircleIcon className="h-4 w-4 mr-2" />
             Add Session
           </Button>
-          <Button onClick={() => router.back()}>
+          <Button onClick={() => navigate(-1)}>
             <ChevronLeftIcon className="h-4 w-4" />
             Back
           </Button>
@@ -235,51 +238,29 @@ export default function CourseSessionPage() {
                     {sessions.map((session) => (
                       <tr key={session.id} className="border-t dark:border-gray-700 transition-colors duration-300">
                         <td className="p-3 dark:text-white">{session.topic}</td>
+                        <td className="p-3 dark:text-white">{session.date} {session.time}</td>
+                        <td className="p-3 dark:text-white">{session.location.name}</td>
+                        <td className="p-3 dark:text-white">{session.attendanceMethod}</td>
+                        <td className="p-3 dark:text-white">{session.radiusLimit} meters</td>
                         <td className="p-3 dark:text-white">
-                          {session.date} {session.time}
-                          <div className="text-sm text-gray-500 dark:text-gray-400">{session.duration}</div>
-                        </td>
-                        <td className="p-3 dark:text-white">
-                          {session.location.name}
-                          <div className="text-xs text-gray-500 dark:text-gray-400">
-                            Lat: {session.location.latitude},
-                            Long: {session.location.longitude}
-                          </div>
-                        </td>
-                        <td className="p-3">
-                          <Badge className={
-                            session.attendanceMethod === "both" ? "bg-purple-600" :
-                            session.attendanceMethod === "lecturer" ? "bg-blue-600" :
-                            "bg-green-600"
-                          }>
-                            {session.attendanceMethod === "both" ? "Both" :
-                             session.attendanceMethod === "lecturer" ? "Lecturer Based" :
-                             "Student Based"}
-                          </Badge>
-                        </td>
-                        <td className="p-3 dark:text-white">{session.radiusLimit}m</td>
-                        <td className="p-3">
-                          <Badge className={session.status === "active" ? "bg-green-600" : "bg-gray-600"}>
+                          <Badge variant={session.status === 'active' ? 'success' : 'danger'}>
                             {session.status}
                           </Badge>
                         </td>
-                        <td className="p-3">
-                          <div className="flex gap-2">
-                            <Button
-                              onClick={() => toggleSessionStatus(session.id)}
-                              variant={session.status === "active" ? "destructive" : "default"}
-                              size="sm"
-                            >
-                              {session.status === "active" ? (
-                                <ToggleRightIcon className="h-4 w-4" />
-                              ) : (
-                                <ToggleLeftIcon className="h-4 w-4" />
-                              )}
-                            </Button>
-                            <Button size="sm">
-                              <Settings2Icon className="h-4 w-4" />
-                            </Button>
-                          </div>
+                        <td className="p-3 flex gap-2">
+                          <Button
+                            onClick={() => toggleSessionStatus(session.id)}
+                            className="transition-colors duration-300"
+                          >
+                            {session.status === 'active' ? (
+                              <ToggleLeftIcon className="h-4 w-4" />
+                            ) : (
+                              <ToggleRightIcon className="h-4 w-4" />
+                            )}
+                          </Button>
+                          <Button className="transition-colors duration-300">
+                            <Settings2Icon className="h-4 w-4" />
+                          </Button>
                         </td>
                       </tr>
                     ))}
