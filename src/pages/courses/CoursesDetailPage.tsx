@@ -1,54 +1,129 @@
-import Heading from '@/components/shared/heading';
+import React, { useState, useEffect } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { useRouter } from '@/routes/hooks';
-import { ChevronLeftIcon, ShareIcon, CameraIcon, SearchIcon } from 'lucide-react';
-import { useSearchParams } from 'react-router-dom';
-import StudentFeedTable from './components/course-feed-table';
-import { useGetCourses } from './queries/queries';
-import { useState } from 'react';
+import {
+  ChevronLeftIcon,
+  PlusCircleIcon,
+  MapPinIcon,
+  UserIcon,
+  ToggleLeftIcon,
+  ToggleRightIcon,
+  Settings2Icon
+} from 'lucide-react';
+import Heading from '@/components/shared/heading';
 
-export default function CourseDetailPage() {
-  const [searchParams] = useSearchParams();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [cameraStarted, setCameraStarted] = useState(false);
-
-  const page = Number(searchParams.get('page') || 1);
-  const pageLimit = Number(searchParams.get('limit') || 10);
-  const country = searchParams.get('search') || null;
-  const offset = (page - 1) * pageLimit;
-  const { data, isLoading } = useGetCourses(offset, pageLimit, country);
-  const users = data?.users;
-  const totalUsers = data?.total_users;
-  const pageCount = Math.ceil(totalUsers / pageLimit);
+export default function CourseSessionPage() {
   const router = useRouter();
+  const [sessions, setSessions] = useState([
+    {
+      id: 1,
+      topic: "Introduction to AI Concepts",
+      date: "2025-01-15",
+      time: "09:00",
+      duration: "2 hours",
+      status: "inactive",
+      location: {
+        name: "Lecture Hall A",
+        latitude: 51.5074,
+        longitude: -0.1278
+      },
+      attendanceMethod: "both",
+      radiusLimit: 50,
+    }
+  ]);
 
-  const startCamera = () => {
-    setCameraStarted(true);
-    // Logic for starting facial recognition can be added here
+  const [showNewSession, setShowNewSession] = useState(false);
+  const [currentLocation, setCurrentLocation] = useState(null);
+  const [newSession, setNewSession] = useState({
+    topic: "",
+    date: "",
+    time: "",
+    duration: "",
+    location: {
+      name: "",
+      latitude: "",
+      longitude: ""
+    },
+    attendanceMethod: "both",
+    radiusLimit: 50,
+    status: "inactive"
+  });
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setCurrentLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          });
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+        }
+      );
+    }
+  }, []);
+
+  const handleAddSession = () => {
+    if (newSession.topic && newSession.date && newSession.time) {
+      setSessions([...sessions, {
+        id: sessions.length + 1,
+        ...newSession
+      }]);
+      setNewSession({
+        topic: "",
+        date: "",
+        time: "",
+        duration: "",
+        location: {
+          name: "",
+          latitude: "",
+          longitude: ""
+        },
+        attendanceMethod: "both",
+        radiusLimit: 50,
+        status: "inactive"
+      });
+      setShowNewSession(false);
+    }
   };
 
-  if (isLoading) {
-    return (
-      <div className='flex justify-center items-center h-screen'>
-        <h1>Loading!!!</h1>
-      </div>
-    )
-  }
+  const toggleSessionStatus = (sessionId) => {
+    setSessions(sessions.map(session => {
+      if (session.id === sessionId) {
+        return {
+          ...session,
+          status: session.status === "active" ? "inactive" : "active"
+        };
+      }
+      return session;
+    }));
+  };
+
+  const detectCurrentLocation = () => {
+    if (currentLocation) {
+      setNewSession({
+        ...newSession,
+        location: {
+          ...newSession.location,
+          latitude: currentLocation.latitude,
+          longitude: currentLocation.longitude
+        }
+      });
+    }
+  };
 
   return (
-    <div className="p-10">
+    <div className="p-10 transition-colors duration-300">
       <div className="flex items-center justify-between">
-        <Heading title={'Course Attendance Details'} />
+        <Heading title="Course Session Management" />
         <div className="flex justify-end gap-3">
-          <Button onClick={startCamera}>
-            <CameraIcon className="h-4 w-4" />
-            {cameraStarted ? "Camera On" : "Start Camera"}
-          </Button>
-          <Button>
-            <ShareIcon className="h-4 w-4" />
-            Share
+          <Button onClick={() => setShowNewSession(!showNewSession)}>
+            <PlusCircleIcon className="h-4 w-4 mr-2" />
+            Add Session
           </Button>
           <Button onClick={() => router.back()}>
             <ChevronLeftIcon className="h-4 w-4" />
@@ -57,50 +132,164 @@ export default function CourseDetailPage() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-6 py-6 lg:grid-cols-4">
-        <div className="col-span-1 flex flex-col gap-6 lg:col-span-1">
-          <Card className="bg-secondary shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px] drop-shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between font-bold">
-              <p className="text-xl">Course Profile</p>
-              <Badge className="bg-green-600">Ongoing</Badge>
-            </CardHeader>
-            <CardContent className="flex flex-col items-center justify-center">
-              <p className="text-center text-lg font-semibold">Course Name: Introduction to AI</p>
-              <p className="text-center text-lg">Course Code: AI101</p>
-              <p className="text-center text-lg">Semester: Fall 2024</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Students Attendance Information */}
-        <Card className="col-span-1 bg-secondary shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px] drop-shadow-sm lg:col-span-3">
-          <CardHeader className="text-xl font-bold">Marked Attendance</CardHeader>
+      {showNewSession && (
+        <Card className="mt-6 transition-colors duration-300 dark:bg-gray-800">
+          <CardHeader className="text-xl font-bold">Create New Session</CardHeader>
           <CardContent>
-            <div className="flex items-center gap-4 pb-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input
                 type="text"
-                placeholder="Search marked students"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="border border-gray-300 rounded-md px-4 py-2 w-full"
+                placeholder="Session Topic"
+                value={newSession.topic}
+                onChange={(e) => setNewSession({...newSession, topic: e.target.value})}
+                className="border p-2 rounded transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
-              <Button>
-                <SearchIcon className="h-4 w-4" />
-                Search
-              </Button>
+              <input
+                type="date"
+                value={newSession.date}
+                onChange={(e) => setNewSession({...newSession, date: e.target.value})}
+                className="border p-2 rounded transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              />
+              <input
+                type="time"
+                value={newSession.time}
+                onChange={(e) => setNewSession({...newSession, time: e.target.value})}
+                className="border p-2 rounded transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              />
+              <input
+                type="text"
+                placeholder="Duration (e.g., 2 hours)"
+                value={newSession.duration}
+                onChange={(e) => setNewSession({...newSession, duration: e.target.value})}
+                className="border p-2 rounded transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              />
+              <div className="space-y-2">
+                <input
+                  type="text"
+                  placeholder="Location Name"
+                  value={newSession.location.name}
+                  onChange={(e) => setNewSession({
+                    ...newSession,
+                    location: { ...newSession.location, name: e.target.value }
+                  })}
+                  className="border p-2 rounded w-full transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                />
+                <div className="flex gap-2">
+                  <Button onClick={detectCurrentLocation} className="w-full">
+                    <MapPinIcon className="h-4 w-4 mr-2" />
+                    Detect Location
+                  </Button>
+                </div>
+                {currentLocation && (
+                  <div className="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">
+                    Lat: {currentLocation.latitude.toFixed(6)},
+                    Long: {currentLocation.longitude.toFixed(6)}
+                  </div>
+                )}
+              </div>
+              <div className="space-y-2">
+                <select
+                  value={newSession.attendanceMethod}
+                  onChange={(e) => setNewSession({...newSession, attendanceMethod: e.target.value})}
+                  className="border p-2 rounded w-full transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                >
+                  <option value="both">Both Lecturer & Student Based</option>
+                  <option value="lecturer">Lecturer Based Only</option>
+                  <option value="student">Student Based Only</option>
+                </select>
+                <input
+                  type="number"
+                  placeholder="Radius Limit (meters)"
+                  value={newSession.radiusLimit}
+                  onChange={(e) => setNewSession({...newSession, radiusLimit: e.target.value})}
+                  className="border p-2 rounded w-full transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                />
+              </div>
             </div>
-
-            {/* <StudentFeedTable
-              users={users?.filter((user) =>
-                user.name.toLowerCase().includes(searchTerm.toLowerCase())
-              )}
-              page={page}
-              totalUsers={totalUsers}
-              pageCount={pageCount}
-            /> */}
+            <Button onClick={handleAddSession} className="mt-4">
+              Create Session
+            </Button>
           </CardContent>
         </Card>
-      </div>
+      )}
+
+      <Card className="mt-6 transition-colors duration-300 dark:bg-gray-800">
+        <CardHeader className="text-xl font-bold">Session List</CardHeader>
+        <CardContent>
+          <div className="relative">
+            <div className="overflow-x-auto">
+              <div className="max-h-[60vh] overflow-y-auto">
+                <table className="w-full">
+                  <thead className="sticky top-0 bg-gray-100 dark:bg-gray-700 shadow-sm transition-colors duration-300">
+                    <tr>
+                      <th className="p-3 text-left transition-colors duration-300 dark:text-white">Topic</th>
+                      <th className="p-3 text-left transition-colors duration-300 dark:text-white">Date & Time</th>
+                      <th className="p-3 text-left transition-colors duration-300 dark:text-white">Location</th>
+                      <th className="p-3 text-left transition-colors duration-300 dark:text-white">Attendance Method</th>
+                      <th className="p-3 text-left transition-colors duration-300 dark:text-white">Radius</th>
+                      <th className="p-3 text-left transition-colors duration-300 dark:text-white">Status</th>
+                      <th className="p-3 text-left transition-colors duration-300 dark:text-white">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white dark:bg-gray-800 transition-colors duration-300">
+                    {sessions.map((session) => (
+                      <tr key={session.id} className="border-t dark:border-gray-700 transition-colors duration-300">
+                        <td className="p-3 dark:text-white">{session.topic}</td>
+                        <td className="p-3 dark:text-white">
+                          {session.date} {session.time}
+                          <div className="text-sm text-gray-500 dark:text-gray-400">{session.duration}</div>
+                        </td>
+                        <td className="p-3 dark:text-white">
+                          {session.location.name}
+                          <div className="text-xs text-gray-500 dark:text-gray-400">
+                            Lat: {session.location.latitude},
+                            Long: {session.location.longitude}
+                          </div>
+                        </td>
+                        <td className="p-3">
+                          <Badge className={
+                            session.attendanceMethod === "both" ? "bg-purple-600" :
+                            session.attendanceMethod === "lecturer" ? "bg-blue-600" :
+                            "bg-green-600"
+                          }>
+                            {session.attendanceMethod === "both" ? "Both" :
+                             session.attendanceMethod === "lecturer" ? "Lecturer Based" :
+                             "Student Based"}
+                          </Badge>
+                        </td>
+                        <td className="p-3 dark:text-white">{session.radiusLimit}m</td>
+                        <td className="p-3">
+                          <Badge className={session.status === "active" ? "bg-green-600" : "bg-gray-600"}>
+                            {session.status}
+                          </Badge>
+                        </td>
+                        <td className="p-3">
+                          <div className="flex gap-2">
+                            <Button
+                              onClick={() => toggleSessionStatus(session.id)}
+                              variant={session.status === "active" ? "destructive" : "default"}
+                              size="sm"
+                            >
+                              {session.status === "active" ? (
+                                <ToggleRightIcon className="h-4 w-4" />
+                              ) : (
+                                <ToggleLeftIcon className="h-4 w-4" />
+                              )}
+                            </Button>
+                            <Button size="sm">
+                              <Settings2Icon className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
