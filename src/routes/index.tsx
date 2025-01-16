@@ -9,6 +9,7 @@ const SignInPage = lazy(() => import('@/pages/auth/signin'));
 const DashboardPage = lazy(() => import('@/pages/dashboard'));
 const CoursePage = lazy(() => import('@/pages/courses'));
 const CourseDetailPage = lazy(() => import('@/pages/courses/SessionMgtPage'));
+const AttendanceManagementPage = lazy(() => import('@/pages/attendance'));
 
 // ----------------------------------------------------------------------
 
@@ -35,6 +36,10 @@ export default function AppRouter() {
                 {
                     path: 'courses/:id',
                     element: <CourseDetailPage />,
+                },
+                {
+                    path: 'attendance',
+                    element: <AttendanceManagementPage />,
                 },
             ],
         },

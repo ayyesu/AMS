@@ -8,8 +8,6 @@ export default function CoursesPage() {
     const [searchParams] = useSearchParams();
     const page = Number(searchParams.get('page') || 1);
     const pageLimit = Number(searchParams.get('limit') || 10);
-    const search = searchParams.get('search') || null;
-    const offset = (page - 1) * pageLimit;
 
     return (
         <div className='p-4 md:p-8'>
