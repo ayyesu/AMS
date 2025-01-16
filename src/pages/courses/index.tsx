@@ -10,7 +10,7 @@ export default function CoursesPage() {
     const pageLimit = Number(searchParams.get('limit') || 10);
 
     return (
-        <div className='p-4 md:p-8'>
+        <div className='h-full flex-1 space-y-4 overflow-y-auto p-4 md:p-8'>
             <PageHead title='Courses | App' />
             <Breadcrumbs
                 items={[

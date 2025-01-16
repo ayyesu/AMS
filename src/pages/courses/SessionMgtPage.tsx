@@ -125,7 +125,7 @@ export default function CourseSessionPage() {
     };
 
     return (
-        <div className='p-10 transition-colors duration-300 overflow-y-auto h-screen'>
+        <div className='transition-colors duration-300 h-full flex-1 space-y-4 overflow-y-auto p-4 md:p-8'>
             <div className='flex items-center justify-between sticky top-0 bg-background z-20 pb-6'>
                 <Heading title='Course Session Management' />
                 <div className='flex justify-end gap-3'>
@@ -248,6 +248,7 @@ export default function CourseSessionPage() {
                                         Student Based Only
                                     </option>
                                 </select>
+
                                 <input
                                     type='number'
                                     placeholder='Radius Limit (meters)'

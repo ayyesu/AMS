@@ -110,7 +110,7 @@ export default function AttendanceManagementPage() {
     };
 
     return (
-        <div className='p-4 md:p-8'>
+        <div className='h-full flex-1 space-y-4 overflow-y-auto p-4 md:p-8'>
             <PageHead title='Attendance Management | App' />
             <Breadcrumbs
                 items={[
