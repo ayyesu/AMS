@@ -7,10 +7,9 @@ type TCoursesTableProps = {
     courses: any;
     page: number;
     totalUsers: number;
-    pageCount: number;
 };
 
-export default function CoursesTable({courses, pageCount}: TCoursesTableProps) {
+export default function CoursesTable({courses}: TCoursesTableProps) {
     return (
         <>
             <CourseTableActions />
@@ -19,7 +18,6 @@ export default function CoursesTable({courses, pageCount}: TCoursesTableProps) {
                     columns={columns}
                     path='/app/courses'
                     data={courses}
-                    pageCount={pageCount}
                 />
             )}
         </>

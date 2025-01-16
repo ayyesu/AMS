@@ -40,10 +40,6 @@ const CourseCreateForm = ({ modalClose }: { modalClose: () => void }) => {
 
   return (
     <div className="px-2">
-      {/* <div className="flex items-center justify-center text-2xl font-bold">
-        {'<Logo/>'}
-      </div> */}
-
       <Heading
         title={'Add New Course'}
         description={''}

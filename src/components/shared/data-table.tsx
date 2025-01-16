@@ -37,14 +37,12 @@ interface DataTableProps<TData, TValue> {
     data: TData[];
     path: string;
     pageSizeOptions?: number[];
-    pageCount: number;
 }
 
 export default function DataTable<TData extends Identifiable, TValue>({
     columns,
     data,
     path,
-    pageCount,
     pageSizeOptions = [10, 20, 30, 40, 50],
 }: DataTableProps<TData, TValue>) {
     const navigate = useNavigate();
@@ -77,7 +75,6 @@ export default function DataTable<TData extends Identifiable, TValue>({
     const table = useReactTable({
         data,
         columns,
-        pageCount: pageCount ?? -1,
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
         state: {
