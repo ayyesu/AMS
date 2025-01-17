@@ -17,6 +17,7 @@ import {CoursesSvg} from '@/assets/svg/coursesSvg.js';
 import {ActiveAttendanceSvg} from '@/assets/svg/activeAttendanceSvg.js';
 import {TotalSessionsSvg} from '@/assets/svg/totalSessionsSvg.js';
 import {FlaggedAttendanceSvg} from '@/assets/svg/flaggedAttendanceSvg.js';
+import Analytics from './components/analytics/index.js';
 
 export default function DashboardPage() {
     return (
@@ -31,9 +32,7 @@ export default function DashboardPage() {
                 <Tabs defaultValue='overview' className='space-y-4'>
                     <TabsList>
                         <TabsTrigger value='overview'>Overview</TabsTrigger>
-                        <TabsTrigger value='analytics' disabled>
-                            Analytics
-                        </TabsTrigger>
+                        <TabsTrigger value='analytics'>Analytics</TabsTrigger>
                     </TabsList>
                     <TabsContent value='overview' className='space-y-4'>
                         <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
@@ -119,6 +118,9 @@ export default function DashboardPage() {
                                 </CardContent>
                             </Card>
                         </div>
+                    </TabsContent>
+                    <TabsContent value='analytics'>
+                        <Analytics />
                     </TabsContent>
                 </Tabs>
             </div>
