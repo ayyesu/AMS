@@ -1,6 +1,6 @@
 'use client';
 import DashboardNav from '@/components/shared/dashboard-nav';
-import { navItems } from '@/constants/data';
+import { lecturerNavItems, studentNavItems } from '@/constants/data';
 import { useSidebar } from '@/hooks/use-sidebar';
 import { cn } from '@/lib/utils';
 import { ChevronsLeft } from 'lucide-react';
@@ -8,11 +8,13 @@ import { useState } from 'react';
 
 type SidebarProps = {
   className?: string;
+  isStudent?: boolean;
 };
 
-export default function Sidebar({ className }: SidebarProps) {
+export default function Sidebar({ className, isStudent }: SidebarProps) {
   const { isMinimized, toggle } = useSidebar();
   const [status, setStatus] = useState(false);
+  const navItems = isStudent ? studentNavItems : lecturerNavItems;
 
   const handleToggle = () => {
     setStatus(true);

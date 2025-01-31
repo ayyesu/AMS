@@ -1,6 +1,6 @@
 import {NavItem} from '@/types';
 
-export const navItems: NavItem[] = [
+export const lecturerNavItems: NavItem[] = [
     {
         title: 'Dashboard',
         href: '/app',
@@ -17,6 +17,39 @@ export const navItems: NavItem[] = [
         title: 'Attendance Management',
         href: '/app/attendance',
         icon: 'user',
+        label: 'attendance',
+    },
+    {
+        title: 'Logout',
+        href: '/',
+        icon: 'login',
+        label: 'Login',
+    },
+];
+
+export const studentNavItems: NavItem[] = [
+    {
+        title: 'Dashboard',
+        href: '/student',
+        icon: 'dashboard',
+        label: 'Dashboard',
+    },
+    {
+        title: 'Profile',
+        href: '/student/profile',
+        icon: 'user',
+        label: 'profile',
+    },
+    {
+        title: 'Courses',
+        href: '/student/courses',
+        icon: 'page',
+        label: 'courses',
+    },
+    {
+        title: 'Attendance',
+        href: '/student/attendance',
+        icon: 'calendar',
         label: 'attendance',
     },
     {

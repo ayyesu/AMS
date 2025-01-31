@@ -11,6 +11,12 @@ const CoursePage = lazy(() => import('@/pages/courses'));
 const CourseDetailPage = lazy(() => import('@/pages/courses/SessionMgtPage'));
 const AttendanceManagementPage = lazy(() => import('@/pages/attendance'));
 
+// Student Pages
+const StudentDashboard = lazy(() => import('@/pages/student/dashboard'));
+const StudentProfile = lazy(() => import('@/pages/student/profile'));
+const StudentCourses = lazy(() => import('@/pages/student/courses'));
+const StudentAttendance = lazy(() => import('@/pages/student/attendance'));
+
 // ----------------------------------------------------------------------
 
 export default function AppRouter() {
@@ -45,23 +51,48 @@ export default function AppRouter() {
         },
     ];
 
+    const studentRoutes = [
+        {
+            path: '/student',
+            element: (
+                <DashboardLayout>
+                    <Suspense>
+                        <Outlet />
+                    </Suspense>
+                </DashboardLayout>
+            ),
+            children: [
+                {
+                    element: <StudentDashboard />,
+                    index: true,
+                },
+                {
+                    path: 'profile',
+                    element: <StudentProfile />,
+                },
+                {
+                    path: 'courses',
+                    element: <StudentCourses />,
+                },
+                {
+                    path: 'attendance',
+                    element: <StudentAttendance />,
+                },
+            ],
+        },
+    ];
+
     const publicRoutes = [
         {
             path: '/',
             element: <SignInPage />,
-            index: true,
-        },
-        {
-            path: '/404',
-            element: <NotFound />,
-        },
-        {
-            path: '*',
-            element: <Navigate to='/404' replace />,
         },
     ];
 
-    const routes = useRoutes([...dashboardRoutes, ...publicRoutes]);
+    const routes = [...publicRoutes, ...dashboardRoutes, ...studentRoutes];
 
-    return routes;
+    return useRoutes([
+        ...routes,
+        {path: '*', element: <NotFound />},
+    ]);
 }
