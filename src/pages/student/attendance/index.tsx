@@ -38,6 +38,8 @@ interface AttendanceRecord {
 
 export default function StudentAttendance() {
   const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [locationError, setLocationError] = useState<string>('');
   const webcamRef = React.useRef<Webcam>(null);
 
   const dummyAttendance: AttendanceRecord[] = [
@@ -59,6 +61,26 @@ export default function StudentAttendance() {
     },
   ];
 
+  const getLocation = () => {
+    if (!navigator.geolocation) {
+      setLocationError('Geolocation is not supported by your browser');
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLocation({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+        setLocationError('');
+      },
+      (error) => {
+        setLocationError('Please allow location access to mark attendance');
+      }
+    );
+  };
+
   const handleCapture = () => {
     if (webcamRef.current) {
       const imageSrc = webcamRef.current.getScreenshot();
@@ -74,10 +96,24 @@ export default function StudentAttendance() {
       <div className='max-h-screen flex-1 space-y-4 overflow-y-auto p-4 pt-6 md:p-8'>
         <div className='flex items-center justify-between'>
           <h2 className='text-3xl font-bold tracking-tight'>Attendance</h2>
-          <Button onClick={() => setIsCameraOpen(true)}>
-            <Camera className='mr-2 h-4 w-4' />
-            Mark Attendance
-          </Button>
+          <div className='space-y-2'>
+            <Button onClick={() => {
+              getLocation();
+              setIsCameraOpen(true);
+            }}>
+              <Camera className='mr-2 h-4 w-4' />
+              Mark Attendance
+            </Button>
+            {locationError && (
+              <p className='text-sm text-red-500 text-right'>{locationError}</p>
+            )}
+            {location && (
+              <div className='text-sm text-right text-muted-foreground'>
+                <p>Latitude: {location.latitude.toFixed(6)}</p>
+                <p>Longitude: {location.longitude.toFixed(6)}</p>
+              </div>
+            )}
+          </div>
         </div>
 
         <Card>
