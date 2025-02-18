@@ -3,7 +3,7 @@
 export function GlobeSvg(){
     return (
         <svg version="1.0" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" 
-	 width="100" height="100" viewBox="0 0 64 64" enable-background="new 0 0 64 64" xmlSpace="preserve">
+	 width="100" height="100" viewBox="0 0 64 64" enableBackground="new 0 0 64 64" xmlSpace="preserve">
 <g>
 	<path fill="#394240" d="M32,0C14.327,0,0,14.327,0,32s14.327,32,32,32s32-14.327,32-32S49.673,0,32,0z M49.972,31
 		c-0.138-5.582-1.414-10.878-3.613-15.667c2.652-1.022,5.169-2.317,7.515-3.854c4.824,5.14,7.854,11.976,8.102,19.521H49.972z

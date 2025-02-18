@@ -1,14 +1,19 @@
 import NotFound from '@/pages/not-found';
 import {Suspense, lazy} from 'react';
 import {Navigate, Outlet, useRoutes} from 'react-router-dom';
+import {ErrorBoundary} from '@/components/error-boundary';
+import AuthGuard from '@/components/auth/auth-guard';
+import LecturerProfile from '@/pages/lecturer/profile';
 
 const DashboardLayout = lazy(
     () => import('@/components/layout/dashboard-layout'),
 );
 const SignInPage = lazy(() => import('@/pages/auth/signin'));
-const DashboardPage = lazy(() => import('@/pages/dashboard'));
-const CoursePage = lazy(() => import('@/pages/courses'));
-const CourseDetailPage = lazy(() => import('@/pages/courses/SessionMgtPage'));
+const DashboardPage = lazy(() => import('@/pages/lecturer/dashboard'));
+const CoursePage = lazy(() => import('@/pages/lecturer/courses'));
+const CourseDetailPage = lazy(
+    () => import('@/pages/lecturer/courses/SessionMgtPage'),
+);
 const AttendanceManagementPage = lazy(() => import('@/pages/attendance'));
 
 // Student Pages
@@ -16,6 +21,10 @@ const StudentDashboard = lazy(() => import('@/pages/student/dashboard'));
 const StudentProfile = lazy(() => import('@/pages/student/profile'));
 const StudentCourses = lazy(() => import('@/pages/student/courses'));
 const StudentAttendance = lazy(() => import('@/pages/student/attendance'));
+// const MarkAttendancePage = lazy(() => import('@/pages/student/mark-attendance'));
+const VerifyAttendancePage = lazy(
+    () => import('@/pages/student/verify-attendance'),
+);
 
 // ----------------------------------------------------------------------
 
@@ -24,11 +33,15 @@ export default function AppRouter() {
         {
             path: '/app',
             element: (
-                <DashboardLayout>
-                    <Suspense>
-                        <Outlet />
-                    </Suspense>
-                </DashboardLayout>
+                <AuthGuard allowedRoles={['admin', 'lecturer']}>
+                    <ErrorBoundary>
+                        <DashboardLayout>
+                            <Suspense>
+                                <Outlet />
+                            </Suspense>
+                        </DashboardLayout>
+                    </ErrorBoundary>
+                </AuthGuard>
             ),
             children: [
                 {
@@ -47,6 +60,10 @@ export default function AppRouter() {
                     path: 'attendance',
                     element: <AttendanceManagementPage />,
                 },
+                {
+                    path: 'profile/:id',
+                    element: <LecturerProfile />,
+                },
             ],
         },
     ];
@@ -55,11 +72,15 @@ export default function AppRouter() {
         {
             path: '/student',
             element: (
-                <DashboardLayout>
-                    <Suspense>
-                        <Outlet />
-                    </Suspense>
-                </DashboardLayout>
+                <AuthGuard allowedRoles={['student']}>
+                    <ErrorBoundary>
+                        <DashboardLayout>
+                            <Suspense>
+                                <Outlet />
+                            </Suspense>
+                        </DashboardLayout>
+                    </ErrorBoundary>
+                </AuthGuard>
             ),
             children: [
                 {
@@ -78,6 +99,14 @@ export default function AppRouter() {
                     path: 'attendance',
                     element: <StudentAttendance />,
                 },
+                // {
+                //     path: 'mark-attendance',
+                //     element: <MarkAttendancePage />,
+                // },
+                {
+                    path: 'verify-attendance/:sessionId',
+                    element: <VerifyAttendancePage />,
+                },
             ],
         },
     ];
@@ -85,14 +114,15 @@ export default function AppRouter() {
     const publicRoutes = [
         {
             path: '/',
+            element: <Navigate to='/app' />,
+        },
+        {
+            path: 'login',
             element: <SignInPage />,
         },
     ];
 
     const routes = [...publicRoutes, ...dashboardRoutes, ...studentRoutes];
 
-    return useRoutes([
-        ...routes,
-        {path: '*', element: <NotFound />},
-    ]);
+    return useRoutes([...routes, {path: '*', element: <NotFound />}]);
 }

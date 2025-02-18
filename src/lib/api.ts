@@ -1,30 +1,184 @@
-import axios from 'axios';
-// ---------------------------- Student API ------------------------------------------------- //
-// export async function resendEmail(email: string) {
-//     try {
-//       const res = await axios.post("/auth/register/resend-email/", { email });
-//       return res.data;
-//     } catch (error) {
-//       console.log(error);
-//       return error;
-//     }
-// }
+import axios, {AxiosError} from 'axios';
 
-export async function getCourses(
-  offset = 0,
-  pageLimit = 10,
-  searchQuery = ''
-) {
-  try {
-    // Replace with your actual API endpoint URL
-    const res = await axios.get(
-      `https://your-api-url.com/v1/courses?offset=${offset}&limit=${pageLimit}` +
-        (searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : '')
-    );
+// Create axios instance with default config
+const api = axios.create({
+    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000',
+    withCredentials: true,
+});
 
-    return res.data;
-  } catch (error) {
-    console.error('Failed to fetch courses:', error);
-    throw error;
-  }
-}
+// Add request interceptor for authentication
+// api.interceptors.request.use(
+//     (config) => {
+//         const token = localStorage.getItem('token');
+//         if (token) {
+//             config.headers.Authorization = `Bearer ${token}`;
+//         }
+//         return config;
+//     },
+//     (error) => {
+//         return Promise.reject(error);
+//     },
+// );
+
+// Add response interceptor for error handling
+// api.interceptors.response.use(
+//     (response) => response,
+//     (error: AxiosError) => {
+//         if (error.response?.status === 401) {
+//             localStorage.removeItem('token');
+//             localStorage.removeItem('user');
+//             window.location.href = '/login';
+//         }
+//         return Promise.reject(error);
+//     },
+// );
+
+// Auth API endpoints
+export const authApi = {
+    login: async (userIdentifier: string, pin: string) => {
+        const response = await api.post('/login', {userIdentifier, pin});
+        return response;
+    },
+    signup: async (userData: any) => {
+        const response = await api.post('/signup', userData);
+        return response;
+    },
+    authCheck: async () => {
+        try {
+            const response = await api.get('/auth-check');
+            return response.data;
+        } catch (error) {
+            return null;
+        }
+    },
+    logout: async () => {
+        const response = await api.post('/logout');
+        return response.data;
+    },
+};
+
+export const imageApi = {
+    getImage: async (id: string) => {
+        const response = await api.get(`/images/${id}`);
+        return response.data;
+    },
+    uploadImage: async (imageData: FormData) => {
+        const response = await api.post('/images/upload', imageData);
+        return response.data;
+    },
+};
+
+// Course API endpoints
+export const courseApi = {
+    getAll: async () => {
+        const response = await api.get('/courses');
+        return response.data;
+    },
+    getById: async (id: string) => {
+        const response = await api.get(`/courses/${id}`);
+        return response.data;
+    },
+    create: async (courseData: any) => {
+        const response = await api.post('/courses/add', courseData);
+        return response.data;
+    },
+    update: async (id: string, courseData: any) => {
+        const response = await api.put(`/courses/${id}`, courseData);
+        return response.data;
+    },
+    delete: async (id: string) => {
+        const response = await api.delete(`/courses/${id}`);
+        return response.data;
+    },
+};
+
+// Attendance API endpoints
+export const attendanceApi = {
+    getSessionAttendance: async (sessionId: string) => {
+        const response = await api.get(`/attendance/${sessionId}`);
+        return response.data;
+    },
+    markAttendance: async (sessionId: string, data: any) => {
+        const response = await api.post(`/attendance/${sessionId}/mark`, data);
+        return response.data;
+    },
+    verifyLocation: async (
+        sessionId: string,
+        locationData: {
+            latitude: number;
+            longitude: number;
+            accuracy: number;
+        },
+    ) => {
+        const response = await api.post(
+            `/attendance/${sessionId}/verify-location`,
+            locationData,
+        );
+        return response.data;
+    },
+};
+
+// Session API endpoints
+export const sessionApi = {
+    getAll: async () => {
+        const response = await api.get('/sessions');
+        return response.data;
+    },
+    getById: async (id: string) => {
+        const response = await api.get(`/sessions/${id}`);
+        return response.data;
+    },
+    create: async (sessionData: any) => {
+        const response = await api.post('/sessions', sessionData);
+        return response.data;
+    },
+    update: async (id: string, sessionData: any) => {
+        const response = await api.put(`/sessions/${id}`, sessionData);
+        return response.data;
+    },
+    delete: async (id: string) => {
+        const response = await api.delete(`/sessions/${id}`);
+        return response.data;
+    },
+};
+
+// Face Recognition API endpoints
+export const faceRecognitionApi = {
+    uploadImage: async (imageData: FormData) => {
+        const response = await api.post('/face-recognition/upload', imageData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response.data;
+    },
+    verifyFace: async (imageData: FormData) => {
+        const response = await api.post('/face-recognition/verify', imageData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response.data;
+    },
+};
+
+// Student API endpoints
+export const studentApi = {
+    getCourses: async (offset = 0, pageLimit = 10, searchQuery = '') => {
+        try {
+            const res = await api.get(
+                `/courses?offset=${offset}&limit=${pageLimit}` +
+                    (searchQuery
+                        ? `&search=${encodeURIComponent(searchQuery)}`
+                        : ''),
+            );
+
+            return res.data;
+        } catch (error) {
+            console.error('Failed to fetch courses:', error);
+            throw error;
+        }
+    },
+};
+
+export default api;

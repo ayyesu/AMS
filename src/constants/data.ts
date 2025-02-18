@@ -19,12 +19,6 @@ export const lecturerNavItems: NavItem[] = [
         icon: 'user',
         label: 'attendance',
     },
-    {
-        title: 'Logout',
-        href: '/',
-        icon: 'login',
-        label: 'Login',
-    },
 ];
 
 export const studentNavItems: NavItem[] = [
@@ -51,12 +45,6 @@ export const studentNavItems: NavItem[] = [
         href: '/student/attendance',
         icon: 'calendar',
         label: 'attendance',
-    },
-    {
-        title: 'Logout',
-        href: '/',
-        icon: 'login',
-        label: 'Login',
     },
 ];
 
