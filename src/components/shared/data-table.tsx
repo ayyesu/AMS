@@ -29,13 +29,14 @@ import React from 'react';
 import {useSearchParams, useNavigate} from 'react-router-dom';
 
 interface Identifiable {
-    id: string | number;
+    id?: string | number;
+    _id?: string | number;
 }
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
-    path: string;
+    path: (row: TData) => string;
     pageSizeOptions?: number[];
 }
 
@@ -109,10 +110,8 @@ export default function DataTable<TData extends Identifiable, TValue>({
                     {table.getRowModel().rows?.length ? (
                         table.getRowModel().rows.map((row) => (
                             <TableRow
-                                key={row.id}
-                                onClick={() =>
-                                    navigate(`${path}/${row.original.id}`)
-                                }
+                                key={row.original._id || row.original.id} // Updated to handle both id types
+                                onClick={() => navigate(path(row.original))}
                                 data-state={row.getIsSelected() && 'selected'}
                                 className='hover:cursor-pointer'
                             >

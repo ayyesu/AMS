@@ -4,6 +4,8 @@ import {Navigate, Outlet, useRoutes} from 'react-router-dom';
 import {ErrorBoundary} from '@/components/error-boundary';
 import AuthGuard from '@/components/auth/auth-guard';
 import LecturerProfile from '@/pages/lecturer/profile';
+import {Session} from 'inspector/promises';
+import CourseSessionPage from '@/pages/lecturer/courses/SessionMgtPage';
 
 const DashboardLayout = lazy(
     () => import('@/components/layout/dashboard-layout'),
@@ -55,6 +57,10 @@ export default function AppRouter() {
                 {
                     path: 'courses/:id',
                     element: <CourseDetailPage />,
+                },
+                {
+                    path: 'courses/:courseId/sessions',
+                    element: <CourseSessionPage />,
                 },
                 {
                     path: 'attendance',
