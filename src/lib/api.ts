@@ -78,7 +78,13 @@ export const courseApi = {
         const response = await api.get(`/courses/${id}`);
         return response.data;
     },
-    create: async (courseData: any) => {
+    create: async (courseData: {
+        course_name: string;
+        course_code: string;
+        semester: string;
+        academic_year: string;
+        status: string;
+    }) => {
         const response = await api.post('/courses/add', courseData);
         return response.data;
     },
@@ -122,6 +128,10 @@ export const attendanceApi = {
 export const sessionApi = {
     getAll: async () => {
         const response = await api.get('/sessions');
+        return response.data;
+    },
+    getByCourse: async (courseId: string) => {
+        const response = await api.get(`/sessions/course/${courseId}`);
         return response.data;
     },
     getById: async (id: string) => {

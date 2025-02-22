@@ -1,45 +1,36 @@
-import React, { useCallback } from 'react';
-import { Input } from '../ui/input';
-import { useDebounce } from 'use-debounce';
-import { useSearchParams } from 'react-router-dom';
+import React from 'react';
+import {Input} from '../ui/input';
+import {Search} from 'lucide-react';
+
+interface TableSearchInputProps {
+    placeholder: string;
+    value: string;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onClear?: () => void;
+}
 
 export default function TableSearchInput({
-  placeholder
-}: {
-  placeholder?: string;
-}) {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const country = searchParams.get('search') || '';
-  const [searchTerm, setSearchTerm] = React.useState(country);
-  // debounce the search input
-  const [debouncedValue] = useDebounce(searchTerm, 1000);
-  const handleSettingSearchParams = useCallback((newSearchValue: string) => {
-    // Update the URL with the new search value
-    if (
-      newSearchValue === '' ||
-      newSearchValue === undefined ||
-      !newSearchValue
-    ) {
-      searchParams.delete('search');
-      setSearchParams(searchParams);
-      return;
-    }
-    setSearchParams({
-      ...Object.fromEntries(searchParams),
-      page: '1', // Spread the existing search params
-      search: newSearchValue // Update the search value
-    });
-  }, []);
+    placeholder,
+    value,
+    onChange,
+    onClear,
+}: TableSearchInputProps) {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        onChange(e);
+        if (e.target.value === '' && onClear) {
+            onClear();
+        }
+    };
 
-  React.useEffect(() => {
-    handleSettingSearchParams(debouncedValue);
-  }, [debouncedValue, handleSettingSearchParams]);
-  return (
-    <Input
-      placeholder={placeholder || `Search country...`}
-      value={searchTerm}
-      onChange={(event) => setSearchTerm(event.target.value)}
-      className="w-full md:max-w-sm"
-    />
-  );
+    return (
+        <div className='relative'>
+            <Search className='absolute left-2 top-2.5 h-4 w-4 text-muted-foreground' />
+            <Input
+                placeholder={placeholder}
+                value={value}
+                onChange={handleChange}
+                className='pl-8'
+            />
+        </div>
+    );
 }

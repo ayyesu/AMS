@@ -6,15 +6,18 @@ import {ToastProvider} from '@radix-ui/react-toast';
 import {AuthProvider} from './context/auth-context';
 import {ImageProvider} from './context/image-context';
 import {CourseProvider} from './context/course-context';
+import {SessionProvider} from './context/session-context';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <AuthProvider>
             <ImageProvider>
                 <CourseProvider>
-                    <ToastProvider>
-                        <App />
-                    </ToastProvider>
+                    <SessionProvider>
+                        <ToastProvider>
+                            <App />
+                        </ToastProvider>
+                    </SessionProvider>
                 </CourseProvider>
             </ImageProvider>
         </AuthProvider>

@@ -21,39 +21,60 @@ import {z} from 'zod';
 import {useToast} from '@/components/ui/use-toast';
 import {useCourseContext} from '@/context/course-context';
 import {courseApi} from '@/lib/api';
+import {useAuth} from '@/context/auth-context';
 
 const courseFormSchema = z.object({
-    course_code: z.string().min(1, {message: 'course code is required'}),
-    name: z.string().min(1, {message: 'course name is required'}),
-    semester: z
-        .number({message: 'Semester must be a number'})
-        .min(1, {message: 'Semester is required'}),
-    academic_year: z.string().min(1, {message: 'year is required'}),
-    status: z.string().min(1, {message: 'status is required'}),
+    course_code: z.string().min(1, {message: 'Course code is required'}),
+    name: z.string().min(1, {message: 'Course name is required'}),
+    semester: z.coerce
+        .number()
+        .int()
+        .min(1, {message: 'Semester must be between 1 and 3'})
+        .max(3, {message: 'Semester must be between 1 and 3'}),
+    academic_year: z
+        .string()
+        .min(1, {message: 'Academic year is required'})
+        .regex(/^\d{4}\/\d{4}$/, {
+            message: 'Academic year must be in format YYYY/YYYY',
+        }),
+    status: z.enum(['active', 'inactive', 'completed'], {
+        required_error: 'Status is required',
+    }),
 });
 
 type CourseFormSchemaType = z.infer<typeof courseFormSchema>;
 
 const CourseCreateForm = ({modalClose}: {modalClose: () => void}) => {
     const {setCourses, setLoading, setError} = useCourseContext();
+    const {user} = useAuth();
     const {toast} = useToast();
 
     const form = useForm<CourseFormSchemaType>({
         resolver: zodResolver(courseFormSchema),
-        defaultValues: {},
+        defaultValues: {
+            course_code: '',
+            name: '',
+            semester: 1,
+            academic_year: '',
+            status: 'inactive',
+        },
     });
 
     const onSubmit = async (values: CourseFormSchemaType) => {
         try {
             setLoading(true);
-            const response = await courseApi.create({
+            const courseData = {
                 course_name: values.name,
-                course_code: values.course_code,
+                course_code: values.course_code.toUpperCase(),
+                lecturer: user?._id,
                 semester: values.semester.toString(),
                 academic_year: values.academic_year,
                 status: values.status,
-            });
+            };
 
+            const response = await courseApi.create(courseData);
+
+            // Update courses state with the new course
             setCourses((prevCourses) => [...prevCourses, response.data]);
 
             toast({
@@ -61,6 +82,7 @@ const CourseCreateForm = ({modalClose}: {modalClose: () => void}) => {
                 description: 'Course created successfully',
             });
 
+            form.reset(); // Reset form after successful submission
             modalClose();
         } catch (error) {
             const errorMessage =
@@ -132,9 +154,16 @@ const CourseCreateForm = ({modalClose}: {modalClose: () => void}) => {
                                     <FormControl>
                                         <Input
                                             type='number'
-                                            placeholder='Enter the semester'
-                                            {...field}
-                                            className=' px-4 py-6 shadow-inner drop-shadow-xl'
+                                            min={1}
+                                            max={3}
+                                            placeholder='Enter semester (1-3)'
+                                            value={field.value || ''}
+                                            onChange={(e) =>
+                                                field.onChange(
+                                                    Number(e.target.value),
+                                                )
+                                            }
+                                            className='px-4 py-6 shadow-inner drop-shadow-xl'
                                         />
                                     </FormControl>
                                     <FormMessage />
