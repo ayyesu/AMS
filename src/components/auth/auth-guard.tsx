@@ -17,7 +17,7 @@ export default function AuthGuard({children, allowedRoles}: AuthGuardProps) {
         const checkAuth = async () => {
             try {
                 const response = await authApi.authCheck();
-                const user = response.data;
+                const user = response?.data;
 
                 if (!user) {
                     throw new Error('Unauthorized');
@@ -36,6 +36,8 @@ export default function AuthGuard({children, allowedRoles}: AuthGuardProps) {
                 }
             } catch (error) {
                 console.error('Auth check error:', error);
+                // Clear auth state
+                localStorage.clear();
                 toast({
                     title: 'Authentication Required',
                     description: 'Please sign in to continue.',
@@ -51,7 +53,7 @@ export default function AuthGuard({children, allowedRoles}: AuthGuardProps) {
     }, [navigate, allowedRoles, toast]);
 
     if (isLoading) {
-        return <div>Loading...</div>; // Optional: Add a spinner here
+        return <div>Loading...</div>; // TODO: We need to add a spinner here
     }
 
     return <>{children}</>;

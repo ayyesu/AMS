@@ -21,7 +21,10 @@ export const authApi = {
     authCheck: async () => {
         try {
             const response = await api.get('/auth-check');
-            return response.data;
+            if (!response || !response.data) {
+                throw new Error('Invalid response from server');
+            }
+            return response?.data;
         } catch (error) {
             return null;
         }
