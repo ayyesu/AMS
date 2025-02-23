@@ -2,7 +2,9 @@ import axios from 'axios';
 
 // Create axios instance with default config
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000',
+    baseURL: import.meta.env.PROD
+        ? 'https://ams-backend-xhqd.onrender.com'
+        : 'http://localhost:3000',
     withCredentials: true,
 });
 

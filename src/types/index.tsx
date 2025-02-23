@@ -1,36 +1,36 @@
-import { Icons } from '@/components/ui/icons';
+import {Icons} from '../components/ui/icons';
 
 export interface NavItem {
-  title: string;
-  href: string;
-  disabled?: boolean;
-  external?: boolean;
-  icon?: keyof typeof Icons;
-  label?: string;
-  description?: string;
+    title: string;
+    href: string;
+    disabled?: boolean;
+    external?: boolean;
+    icon?: keyof typeof Icons;
+    label?: string;
+    description?: string;
 }
 
 export type SystemStatus = {
-  name: string;
-  status: 'Online' | 'Offline' | 'Maintenance'; 
-  avatar: string;
+    name: string;
+    status: 'Online' | 'Offline' | 'Maintenance';
+    avatar: string;
 };
 
 export interface NavItemWithChildren extends NavItem {
-  items: NavItemWithChildren[];
+    items: NavItemWithChildren[];
 }
 
 export interface NavItemWithOptionalChildren extends NavItem {
-  items?: NavItemWithChildren[];
+    items?: NavItemWithChildren[];
 }
 
 export interface FooterItem {
-  title: string;
-  items: {
     title: string;
-    href: string;
-    external?: boolean;
-  }[];
+    items: {
+        title: string;
+        href: string;
+        external?: boolean;
+    }[];
 }
 
 export type MainNavItem = NavItemWithOptionalChildren;
