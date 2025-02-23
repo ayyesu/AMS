@@ -41,6 +41,12 @@ export interface Attendance {
     verifiedAt: string;
 }
 
+export type SystemStatus = {
+    name: string;
+    status: 'Online' | 'Offline' | 'Maintenance';
+    avatar: string;
+};
+
 export interface ApiResponse<T> {
     data: T;
     message?: string;

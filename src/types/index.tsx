@@ -10,12 +10,6 @@ export interface NavItem {
     description?: string;
 }
 
-export type SystemStatus = {
-    name: string;
-    status: 'Online' | 'Offline' | 'Maintenance';
-    avatar: string;
-};
-
 export interface NavItemWithChildren extends NavItem {
     items: NavItemWithChildren[];
 }
