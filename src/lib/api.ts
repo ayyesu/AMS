@@ -6,6 +6,9 @@ const api = axios.create({
         ? 'https://ams-backend-xhqd.onrender.com'
         : 'http://localhost:3000',
     withCredentials: true,
+    headers: {
+        'Content-Type': 'application/json',
+    },
 });
 
 // Auth API endpoints
