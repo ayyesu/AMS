@@ -7,16 +7,55 @@ import {
     DropdownMenuLabel,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {Edit, PinIcon, MoreHorizontal, Trash} from 'lucide-react';
-import {useNavigate} from 'react-router-dom';
+import {Edit, MoreHorizontal, Trash} from 'lucide-react';
 import {useState} from 'react';
+import {useToast} from '@/components/ui/use-toast';
+import {courseApi} from '@/lib/api';
+import {useCourseContext} from '@/context/course-context';
+import PopupModal from '@/components/shared/popup-modal';
+import CourseUpdateForm from '../course-forms/course-update-form';
 
-export const CellAction: any = ({data}: any) => {
-    const [loading] = useState(false);
+interface CellActionProps {
+    data: {
+        _id: string;
+        course_code: string;
+        course_name: string;
+        semester: string;
+        academic_year: string;
+        status: string;
+    };
+}
+
+export const CellAction = ({data}: CellActionProps) => {
+    const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
-    const navigate = useNavigate();
+    const {toast} = useToast();
+    const {setCourses} = useCourseContext();
 
-    const onConfirm = async () => {};
+    const onConfirm = async () => {
+        try {
+            setLoading(true);
+            await courseApi.delete(data._id);
+
+            setCourses((prevCourses) =>
+                prevCourses.filter((course) => course._id !== data._id),
+            );
+
+            toast({
+                title: 'Success',
+                description: 'Course deleted successfully',
+            });
+        } catch (error) {
+            toast({
+                title: 'Error',
+                description: 'Something went wrong',
+                variant: 'destructive',
+            });
+        } finally {
+            setLoading(false);
+            setOpen(false);
+        }
+    };
 
     return (
         <>
@@ -41,10 +80,22 @@ export const CellAction: any = ({data}: any) => {
                     onClick={(e) => e.stopPropagation()}
                 >
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuItem>
-                        <Edit className='mr-2 h-4 w-4' /> Update
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
+                    <PopupModal
+                        trigger={
+                            <DropdownMenuItem
+                                onSelect={(e) => e.preventDefault()}
+                            >
+                                <Edit className='mr-2 h-4 w-4' /> Update
+                            </DropdownMenuItem>
+                        }
+                        renderModal={(onClose) => (
+                            <CourseUpdateForm
+                                courseData={data}
+                                modalClose={onClose}
+                            />
+                        )}
+                    />
+                    <DropdownMenuItem onClick={() => setOpen(true)}>
                         <Trash className='mr-2 h-4 w-4' /> Delete
                     </DropdownMenuItem>
                 </DropdownMenuContent>

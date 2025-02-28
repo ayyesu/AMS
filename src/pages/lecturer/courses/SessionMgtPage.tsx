@@ -29,6 +29,16 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 export default function CourseSessionPage() {
     const navigate = useNavigate();
@@ -36,6 +46,7 @@ export default function CourseSessionPage() {
     const {toast} = useToast();
     const {sessions, setSessions, loading, setLoading, setError} =
         useSessionContext();
+    const [sessionToDelete, setSessionToDelete] = useState<string | null>(null);
     const [showNewSession, setShowNewSession] = useState(false);
     const [currentLocation, setCurrentLocation] = useState({
         latitude: 0,
@@ -207,7 +218,12 @@ export default function CourseSessionPage() {
             });
         } finally {
             setLoading(false);
+            setSessionToDelete(null);
         }
+    };
+
+    const confirmDelete = (sessionId: string) => {
+        setSessionToDelete(sessionId);
     };
 
     const toggleSessionStatus = async (sessionId: string) => {
@@ -306,6 +322,34 @@ export default function CourseSessionPage() {
                     </Button>
                 </div>
             </div>
+
+            <AlertDialog
+                open={!!sessionToDelete}
+                onOpenChange={() => setSessionToDelete(null)}
+            >
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This action cannot be undone. This will permanently
+                            delete the session and all related attendance
+                            records.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={() =>
+                                sessionToDelete &&
+                                handleDeleteSession(sessionToDelete)
+                            }
+                            className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
+                        >
+                            Delete
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
 
             {showNewSession && (
                 <Card className='mt-6 transition-colors duration-300 dark:bg-gray-800'>
@@ -642,7 +686,7 @@ export default function CourseSessionPage() {
                                                     <Button
                                                         variant='destructive'
                                                         onClick={() =>
-                                                            handleDeleteSession(
+                                                            confirmDelete(
                                                                 session._id,
                                                             )
                                                         }

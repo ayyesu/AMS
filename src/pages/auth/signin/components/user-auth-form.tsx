@@ -84,9 +84,7 @@ export default function UserAuthForm() {
             console.error('Login error:', error);
             toast({
                 title: 'Error',
-                description:
-                    error.message ||
-                    'Failed to login. Please check your credentials.',
+                description: error.response?.data?.message || error.message,
                 variant: 'destructive',
             });
         } finally {
