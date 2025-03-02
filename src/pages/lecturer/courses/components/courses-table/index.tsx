@@ -1,7 +1,6 @@
 import DataTable from '@/components/shared/data-table';
 import {columns} from './columns';
 import CourseTableActions from './course-table-action';
-import {useCourseContext} from '@/context/course-context';
 
 type TCoursesTableProps = {
     courses: Array<{

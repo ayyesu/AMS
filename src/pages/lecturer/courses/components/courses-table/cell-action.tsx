@@ -57,11 +57,19 @@ export const CellAction = ({data}: CellActionProps) => {
         }
     };
 
+    const handleDeleteClick = (e: React.MouseEvent) => {
+        e.stopPropagation(); // Prevent row click event
+        setOpen(true);
+    };
+
     return (
         <>
             <AlertModal
                 isOpen={open}
-                onClose={() => setOpen(false)}
+                onClose={(e?: React.MouseEvent) => {
+                    if (e) e.stopPropagation();
+                    setOpen(false);
+                }}
                 onConfirm={onConfirm}
                 loading={loading}
             />
@@ -95,7 +103,7 @@ export const CellAction = ({data}: CellActionProps) => {
                             />
                         )}
                     />
-                    <DropdownMenuItem onClick={() => setOpen(true)}>
+                    <DropdownMenuItem onClick={handleDeleteClick}>
                         <Trash className='mr-2 h-4 w-4' /> Delete
                     </DropdownMenuItem>
                 </DropdownMenuContent>
