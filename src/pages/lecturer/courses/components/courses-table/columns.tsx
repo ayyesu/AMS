@@ -20,8 +20,12 @@ export const columns = [
         header: 'ACADEMIC YEAR',
     },
     {
-        accessorKey: 'status',
-        header: 'status',
+        accessorKey: 'isEnrollmentOpen',
+        header: 'Enrollment',
+        cell: ({row}: any) => {
+            const isOpen = row.getValue('isEnrollmentOpen');
+            return isOpen ? 'Open' : 'Closed';
+        },
     },
     {
         id: 'actions',

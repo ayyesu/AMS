@@ -40,6 +40,9 @@ const courseFormSchema = z.object({
     status: z.enum(['active', 'inactive', 'completed'], {
         required_error: 'Status is required',
     }),
+    isEnrollmentOpen: z.boolean({
+        required_error: 'Enrollment status is required',
+    }),
 });
 
 type CourseFormSchemaType = z.infer<typeof courseFormSchema>;
@@ -52,6 +55,7 @@ interface CourseUpdateFormProps {
         semester: string;
         academic_year: string;
         status: string;
+        isEnrollmentOpen?: boolean;
     };
     modalClose: () => void;
 }
@@ -71,6 +75,7 @@ export default function CourseUpdateForm({
             semester: parseInt(courseData.semester),
             academic_year: courseData.academic_year,
             status: courseData.status as 'active' | 'inactive' | 'completed',
+            isEnrollmentOpen: courseData.isEnrollmentOpen ?? false,
         },
     });
 
@@ -83,6 +88,7 @@ export default function CourseUpdateForm({
                 semester: values.semester.toString(),
                 academic_year: values.academic_year,
                 status: values.status,
+                isEnrollmentOpen: values.isEnrollmentOpen,
             };
 
             const response = await courseApi.update(courseData._id, updateData);
@@ -219,6 +225,35 @@ export default function CourseUpdateForm({
                                             </SelectItem>
                                             <SelectItem value='completed'>
                                                 Completed
+                                            </SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name='isEnrollmentOpen'
+                            render={({field}) => (
+                                <FormItem>
+                                    <Select
+                                        onValueChange={(value) =>
+                                            field.onChange(value === 'true')
+                                        }
+                                        value={field.value.toString()}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder='Select enrollment status' />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value='true'>
+                                                Open
+                                            </SelectItem>
+                                            <SelectItem value='false'>
+                                                Closed
                                             </SelectItem>
                                         </SelectContent>
                                     </Select>

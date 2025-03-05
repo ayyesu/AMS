@@ -10,28 +10,57 @@ import {useImage} from '@/context/image-context';
 
 export default function UserProfile() {
     const {user} = useAuth();
-    const {imageData} = useImage();
+    const {imageData, uploadImage, isLoading, error, uploadProgress} =
+        useImage();
+    const [uploadError, setUploadError] = useState<string | null>(null);
+
     const userData = {
         name: user?.fullName,
         email: user?.email,
         studentId: user?.userIdentifier,
     };
 
-    const updateProfileImage = async (formData: FormData) => {
+    // Remove the updateProfileImage function as we're using the context's uploadImage
+
+    const handleImageUpload = async (file: File) => {
         try {
-            const response = await fetch('/api/update-profile-image', {
-                method: 'POST',
-                body: formData,
-            });
-            if (response.ok) {
-                // Refresh the image data or update the context
-                // You might need to call a function from your image context here
+            setUploadError(null);
+
+            // Validate file size and type before upload
+            if (file.size > 5 * 1024 * 1024) {
+                setUploadError('File size should not exceed 5MB');
+                return;
             }
+
+            if (!file.type.startsWith('image/')) {
+                setUploadError('Please upload an image file');
+                return;
+            }
+
+            await uploadImage(file);
         } catch (error) {
+            setUploadError(
+                error instanceof Error
+                    ? error.message
+                    : 'Failed to upload image',
+            );
             console.error('Error uploading image:', error);
         }
     };
-
+    // In the input element, add accept attribute to limit file types
+    <input
+        id='picture'
+        type='file'
+        accept='image/jpeg,image/png,image/gif'
+        className='hidden'
+        disabled={isLoading}
+        onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) {
+                handleImageUpload(file);
+            }
+        }}
+    />;
     return (
         <>
             <PageHead title='Profile | Student' />
@@ -59,8 +88,22 @@ export default function UserProfile() {
                                     htmlFor='picture'
                                     className='cursor-pointer text-sm text-muted-foreground hover:text-primary'
                                 >
-                                    Change Picture
+                                    {isLoading
+                                        ? `Uploading... ${uploadProgress}%`
+                                        : 'Change Picture'}
                                 </Label>
+                                {(uploadError || error) && (
+                                    <p className='text-sm text-red-500'>
+                                        {uploadError || error}
+                                    </p>
+                                )}
+                                {imageData && (
+                                    <p className='text-sm text-green-500'>
+                                        {imageData.face_descriptor
+                                            ? '✓ Face detected and registered'
+                                            : '⚠ No face detected in image'}
+                                    </p>
+                                )}
                                 <p className='text-sm text-secondary-foreground text-center max-w-[250px]'>
                                     Note: This image will be used for facial
                                     recognition. Please provide a clear, recent
@@ -71,15 +114,11 @@ export default function UserProfile() {
                                     type='file'
                                     accept='image/*'
                                     className='hidden'
+                                    disabled={isLoading}
                                     onChange={(e) => {
                                         const file = e.target.files?.[0];
                                         if (file) {
-                                            // Handle file upload here
-                                            const formData = new FormData();
-                                            formData.append('image', file);
-                                            // Add your API call to update the image here
-                                            // Example:
-                                            // updateProfileImage(formData);
+                                            handleImageUpload(file);
                                         }
                                     }}
                                 />

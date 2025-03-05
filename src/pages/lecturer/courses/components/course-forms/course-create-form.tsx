@@ -40,6 +40,9 @@ const courseFormSchema = z.object({
     status: z.enum(['active', 'inactive', 'completed'], {
         required_error: 'Status is required',
     }),
+    isEnrollmentOpen: z.boolean({
+        required_error: 'Enrollment status is required',
+    }),
 });
 
 type CourseFormSchemaType = z.infer<typeof courseFormSchema>;
@@ -57,6 +60,7 @@ const CourseCreateForm = ({modalClose}: {modalClose: () => void}) => {
             semester: 1,
             academic_year: '',
             status: 'inactive',
+            isEnrollmentOpen: false,
         },
     });
 
@@ -70,6 +74,7 @@ const CourseCreateForm = ({modalClose}: {modalClose: () => void}) => {
                 semester: values.semester.toString(),
                 academic_year: values.academic_year,
                 status: values.status,
+                isEnrollmentOpen: values.isEnrollmentOpen,
             };
 
             const response = await courseApi.create(courseData);
@@ -208,6 +213,35 @@ const CourseCreateForm = ({modalClose}: {modalClose: () => void}) => {
                                                 </SelectItem>
                                                 <SelectItem value='completed'>
                                                     Completed
+                                                </SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name='isEnrollmentOpen'
+                            render={({field}) => (
+                                <FormItem>
+                                    <FormControl>
+                                        <Select
+                                            onValueChange={(value) =>
+                                                field.onChange(value === 'true')
+                                            }
+                                            value={field.value.toString()}
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue placeholder='Select enrollment status' />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value='true'>
+                                                    Open
+                                                </SelectItem>
+                                                <SelectItem value='false'>
+                                                    Closed
                                                 </SelectItem>
                                             </SelectContent>
                                         </Select>

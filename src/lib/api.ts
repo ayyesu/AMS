@@ -43,9 +43,35 @@ export const imageApi = {
         const response = await api.get(`/images/${id}`);
         return response.data;
     },
-    uploadImage: async (imageData: FormData) => {
-        const response = await api.post('/images/upload', imageData);
-        return response.data;
+    uploadImage: async (
+        formData: FormData,
+        id: string,
+        onProgress?: (progress: number) => void,
+    ) => {
+        try {
+            const response = await api.post(`/images/${id}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                onUploadProgress: (progressEvent) => {
+                    if (progressEvent.total && onProgress) {
+                        const percentCompleted = Math.round(
+                            (progressEvent.loaded * 100) / progressEvent.total,
+                        );
+                        onProgress(percentCompleted);
+                    }
+                },
+            });
+
+            if (!response.data) {
+                throw new Error('No response from server');
+            }
+
+            return response.data;
+        } catch (error) {
+            console.error('Upload error:', error);
+            throw error;
+        }
     },
 };
 

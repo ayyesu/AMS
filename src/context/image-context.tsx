@@ -6,6 +6,7 @@ interface ImageData {
     _id: string;
     student: string;
     image_path: string;
+    face_descriptor?: boolean;
 }
 
 type ImageContextType = {
@@ -14,6 +15,7 @@ type ImageContextType = {
     uploadImage: (file: File) => Promise<void>;
     isLoading: boolean;
     error: string | null;
+    uploadProgress: number;
 };
 
 const ImageContext = createContext<ImageContextType | undefined>(undefined);
@@ -22,6 +24,7 @@ export function ImageProvider({children}: {children: React.ReactNode}) {
     const [imageData, setImageData] = useState<ImageData | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [uploadProgress, setUploadProgress] = useState(0);
     const {user} = useAuth();
 
     // Fetch user's profile image on mount or when user changes
@@ -56,28 +59,43 @@ export function ImageProvider({children}: {children: React.ReactNode}) {
         try {
             setIsLoading(true);
             setError(null);
+            setUploadProgress(0);
 
+            // Validate file size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                throw new Error('File size should not exceed 5MB');
+            }
+
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                throw new Error('Please upload an image file');
+            }
+
+            // Create FormData and append the file
             const formData = new FormData();
             formData.append('image', file);
-            formData.append('student', user._id);
 
-            const response = await fetch('/images/upload', {
-                method: 'POST',
-                body: formData,
-            });
+            const response = await imageApi.uploadImage(
+                formData,
+                user._id,
+                (progress) => {
+                    setUploadProgress(progress);
+                },
+            );
 
-            if (!response.ok) {
+            if (!response.data) {
                 throw new Error('Failed to upload image');
             }
 
-            const data = await response.json();
-            setImageData(data.data);
+            setImageData(response.data);
         } catch (err) {
-            setError(
-                err instanceof Error ? err.message : 'Failed to upload image',
-            );
+            const errorMessage =
+                err instanceof Error ? err.message : 'Failed to upload image';
+            setError(errorMessage);
+            throw new Error(errorMessage);
         } finally {
             setIsLoading(false);
+            setUploadProgress(0);
         }
     };
 
@@ -89,6 +107,7 @@ export function ImageProvider({children}: {children: React.ReactNode}) {
                 uploadImage,
                 isLoading,
                 error,
+                uploadProgress,
             }}
         >
             {children}
