@@ -4,7 +4,6 @@ import {Navigate, Outlet, useRoutes} from 'react-router-dom';
 import {ErrorBoundary} from '@/components/error-boundary';
 import AuthGuard from '@/components/auth/auth-guard';
 import LecturerProfile from '@/pages/lecturer/profile';
-import {Session} from 'inspector/promises';
 import CourseSessionPage from '@/pages/lecturer/courses/SessionMgtPage';
 
 const DashboardLayout = lazy(
@@ -17,16 +16,6 @@ const CourseDetailPage = lazy(
     () => import('@/pages/lecturer/courses/SessionMgtPage'),
 );
 const AttendanceManagementPage = lazy(() => import('@/pages/attendance'));
-
-// Student Pages
-const StudentDashboard = lazy(() => import('@/pages/student/dashboard'));
-const StudentProfile = lazy(() => import('@/pages/student/profile'));
-const StudentCourses = lazy(() => import('@/pages/student/courses'));
-const StudentAttendance = lazy(() => import('@/pages/student/attendance'));
-// const MarkAttendancePage = lazy(() => import('@/pages/student/mark-attendance'));
-const VerifyAttendancePage = lazy(
-    () => import('@/pages/student/verify-attendance'),
-);
 
 // ----------------------------------------------------------------------
 
@@ -74,49 +63,6 @@ export default function AppRouter() {
         },
     ];
 
-    const studentRoutes = [
-        {
-            path: '/student',
-            element: (
-                <AuthGuard allowedRoles={['student']}>
-                    <ErrorBoundary>
-                        <DashboardLayout>
-                            <Suspense>
-                                <Outlet />
-                            </Suspense>
-                        </DashboardLayout>
-                    </ErrorBoundary>
-                </AuthGuard>
-            ),
-            children: [
-                {
-                    element: <StudentDashboard />,
-                    index: true,
-                },
-                {
-                    path: 'profile',
-                    element: <StudentProfile />,
-                },
-                {
-                    path: 'courses',
-                    element: <StudentCourses />,
-                },
-                {
-                    path: 'attendance',
-                    element: <StudentAttendance />,
-                },
-                // {
-                //     path: 'mark-attendance',
-                //     element: <MarkAttendancePage />,
-                // },
-                {
-                    path: 'verify-attendance/:sessionId',
-                    element: <VerifyAttendancePage />,
-                },
-            ],
-        },
-    ];
-
     const publicRoutes = [
         {
             path: '/',
@@ -128,7 +74,7 @@ export default function AppRouter() {
         },
     ];
 
-    const routes = [...publicRoutes, ...dashboardRoutes, ...studentRoutes];
+    const routes = [...publicRoutes, ...dashboardRoutes];
 
     return useRoutes([...routes, {path: '*', element: <NotFound />}]);
 }

@@ -40,7 +40,7 @@ export default function UserAuthForm() {
         defaultValues: {
             id: '',
             pin: '',
-            role: 'student',
+            role: 'lecturer',
         },
     });
 
@@ -71,7 +71,11 @@ export default function UserAuthForm() {
 
             // Route based on role
             if (user?.data.role === 'student') {
-                navigate('/student');
+                toast({
+                    title: 'Access Denied!!',
+                    description: 'Restricted access to this portal',
+                    variant: 'destructive',
+                });
             } else {
                 navigate('/app');
             }
@@ -101,40 +105,6 @@ export default function UserAuthForm() {
                 >
                     <FormField
                         control={form.control}
-                        name='role'
-                        render={({field}) => (
-                            <FormItem className='space-y-3'>
-                                <FormControl>
-                                    <RadioGroup
-                                        onValueChange={field.onChange}
-                                        value={field.value}
-                                        className='flex space-y-1'
-                                    >
-                                        <FormItem className='flex items-center space-x-3 space-y-0'>
-                                            <FormControl>
-                                                <RadioGroupItem value='student' />
-                                            </FormControl>
-                                            <FormLabel className='font-normal'>
-                                                Student
-                                            </FormLabel>
-                                        </FormItem>
-                                        <FormItem className='flex items-center space-x-3 space-y-0'>
-                                            <FormControl>
-                                                <RadioGroupItem value='lecturer' />
-                                            </FormControl>
-                                            <FormLabel className='font-normal'>
-                                                Lecturer
-                                            </FormLabel>
-                                        </FormItem>
-                                    </RadioGroup>
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-
-                    <FormField
-                        control={form.control}
                         name='id'
                         render={({field}) => (
                             <FormItem>
@@ -146,9 +116,7 @@ export default function UserAuthForm() {
                                     />
                                 </FormControl>
                                 <FormDescription>
-                                    {form.watch('role') === 'student'
-                                        ? 'Enter your Student ID'
-                                        : 'Enter your Staff ID'}
+                                    Enter your Staff ID
                                 </FormDescription>
                                 <FormMessage />
                             </FormItem>
