@@ -21,8 +21,11 @@ interface Course {
 
 interface CourseContextType {
     courses: Course[];
+    setCourses: React.Dispatch<React.SetStateAction<Course[]>>;
     loading: boolean;
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
     error: string | null;
+    setError: React.Dispatch<React.SetStateAction<string | null>>;
     fetchCourses: () => Promise<void>;
 }
 
@@ -59,11 +62,22 @@ export const CourseProvider: React.FC<CourseProviderProps> = ({children}) => {
     const value = useMemo(
         () => ({
             courses,
+            setCourses,
+            loading,
+            setLoading,
+            error,
+            setError,
+            fetchCourses,
+        }),
+        [
+            courses,
             loading,
             error,
             fetchCourses,
-        }),
-        [courses, loading, error, fetchCourses],
+            setCourses,
+            setLoading,
+            setError,
+        ],
     );
 
     return (

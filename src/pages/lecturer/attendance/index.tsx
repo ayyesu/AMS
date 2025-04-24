@@ -28,7 +28,7 @@ import {sessionApi} from '@/lib/api';
 import {format} from 'date-fns';
 
 export default function AttendanceManagementPage() {
-    // Use context states
+    // context states
     const {
         courses,
         fetchCourses,
