@@ -381,8 +381,11 @@ export default function AttendanceManagementPage() {
                                                 </TableCell>
                                             </TableRow>
                                         ) : (
+                                            // Use updated property names here
                                             attendanceRecords.map((record) => (
-                                                <TableRow key={record._id}>
+                                                <TableRow
+                                                    key={record?.student.id}
+                                                >
                                                     <TableCell>
                                                         {
                                                             record.student
@@ -396,22 +399,25 @@ export default function AttendanceManagementPage() {
                                                         }
                                                     </TableCell>
                                                     <TableCell>
-                                                        {record.check_in_time
+                                                        {/* Use captured_at */}
+                                                        {record.captured_at
                                                             ? format(
                                                                   new Date(
-                                                                      record.check_in_time,
+                                                                      record.captured_at,
                                                                   ),
-                                                                  'p',
+                                                                  'p', // 'p' is locale-dependent short time
                                                               )
                                                             : 'N/A'}
                                                     </TableCell>
                                                     <TableCell>
                                                         <Badge
                                                             className={`${getStatusColor(
-                                                                record.status,
-                                                            )} text-white`} // Ensure text is white
+                                                                record.attendance_status,
+                                                            )} text-white`}
                                                         >
-                                                            {record.status}
+                                                            {
+                                                                record.attendance_status
+                                                            }
                                                         </Badge>
                                                     </TableCell>
                                                     <TableCell>

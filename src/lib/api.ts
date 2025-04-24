@@ -109,6 +109,7 @@ export const courseApi = {
 export const attendanceApi = {
     getSessionAttendance: async (sessionId: string) => {
         const response = await api.get(`/attendance/session/${sessionId}`);
+        console.log(response);
         return response.data;
     },
     markAttendance: async (sessionId: string, data: any) => {
