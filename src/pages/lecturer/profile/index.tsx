@@ -20,8 +20,6 @@ export default function UserProfile() {
         studentId: user?.userIdentifier,
     };
 
-    // Remove the updateProfileImage function as we're using the context's uploadImage
-
     const handleImageUpload = async (file: File) => {
         try {
             setUploadError(null);
@@ -97,18 +95,7 @@ export default function UserProfile() {
                                         {uploadError || error}
                                     </p>
                                 )}
-                                {imageData && (
-                                    <p className='text-sm text-green-500'>
-                                        {imageData.face_descriptor
-                                            ? '✓ Face detected and registered'
-                                            : '⚠ No face detected in image'}
-                                    </p>
-                                )}
-                                <p className='text-sm text-secondary-foreground text-center max-w-[250px]'>
-                                    Note: This image will be used for facial
-                                    recognition. Please provide a clear, recent
-                                    photo of your face.
-                                </p>
+
                                 <input
                                     id='picture'
                                     type='file'

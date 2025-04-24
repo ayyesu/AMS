@@ -15,7 +15,9 @@ const CoursePage = lazy(() => import('@/pages/lecturer/courses'));
 const CourseDetailPage = lazy(
     () => import('@/pages/lecturer/courses/SessionMgtPage'),
 );
-const AttendanceManagementPage = lazy(() => import('@/pages/attendance'));
+const AttendanceManagementPage = lazy(
+    () => import('@/pages/lecturer/attendance'),
+);
 
 // ----------------------------------------------------------------------
 

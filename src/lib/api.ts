@@ -108,7 +108,7 @@ export const courseApi = {
 // Attendance API endpoints
 export const attendanceApi = {
     getSessionAttendance: async (sessionId: string) => {
-        const response = await api.get(`/attendance/${sessionId}`);
+        const response = await api.get(`/attendance/session/${sessionId}`);
         return response.data;
     },
     markAttendance: async (sessionId: string, data: any) => {

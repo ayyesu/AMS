@@ -14,7 +14,6 @@ import {zodResolver} from '@hookform/resolvers/zod';
 import {useState} from 'react';
 import {useForm} from 'react-hook-form';
 import * as z from 'zod';
-import {RadioGroup, RadioGroupItem} from '@/components/ui/radio-group';
 import {authApi} from '@/lib/api';
 import {useToast} from '@/components/ui/use-toast';
 import {useAuth} from '@/context/auth-context';
