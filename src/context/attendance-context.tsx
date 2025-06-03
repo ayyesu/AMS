@@ -80,46 +80,58 @@ export const AttendanceProvider: React.FC<AttendanceProviderProps> = ({
 
     // Mark attendance using facial recognition
     const markAttendanceWithFace = useCallback(
-        async (sessionId: string, imageBlob: Blob) => {
-            if (!sessionId || !imageBlob) return;
+        async (
+            courseId: string,
+            sessionId: string,
+            imageBlob: Blob,
+            locationCoordinates: any = null,
+        ): Promise<string> => {
+            if (!sessionId || !imageBlob) {
+                throw new Error('Missing required parameters');
+            }
             setLoading(true);
             setError(null);
             try {
                 const formData = new FormData();
-                formData.append('image', imageBlob, 'attendance_face.jpg');
+                formData.append(
+                    'capturedImage',
+                    imageBlob,
+                    'captured_image.jpg',
+                );
 
-                // verifyFace returns student details upon successful verification
-                const verificationResponse =
-                    await faceRecognitionApi.verifyFace(formData);
-
-                if (
-                    !verificationResponse ||
-                    !verificationResponse.data?.studentId
-                ) {
-                    throw new Error(
-                        'Face verification failed or student not found.',
+                if (locationCoordinates) {
+                    formData.append(
+                        'latitude',
+                        locationCoordinates.latitude.toString(),
+                    );
+                    formData.append(
+                        'longitude',
+                        locationCoordinates.longitude.toString(),
+                    );
+                    formData.append(
+                        'accuracy',
+                        locationCoordinates.accuracy.toString(),
                     );
                 }
 
-                const studentId = verificationResponse.data.studentId;
+                const response = await attendanceApi.markAttendance(
+                    courseId,
+                    sessionId,
+                    formData,
+                );
 
-                // 2. Mark attendance for the verified student
-                const markData = {
-                    studentId: studentId,
-                    verificationMethod: 'face_recognition',
-                };
-                await attendanceApi.markAttendance(sessionId, markData);
-
-                // 3. Refresh attendance list after marking
+                // Refresh attendance list after marking
                 await fetchAttendanceBySession(sessionId);
+
+                // Return success message from response or fallback message
+                return response?.message || 'Attendance marked successfully';
             } catch (err) {
-                const message =
+                const errorMessage =
                     err instanceof Error
                         ? err.message
                         : 'Failed to mark attendance via face recognition';
-                setError(message);
-                console.error('Mark Attendance Error:', err);
-                throw new Error(message);
+                setError(errorMessage);
+                throw new Error(errorMessage);
             } finally {
                 setLoading(false);
             }

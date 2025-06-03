@@ -112,8 +112,20 @@ export const attendanceApi = {
         console.log(response);
         return response.data;
     },
-    markAttendance: async (sessionId: string, data: any) => {
-        const response = await api.post(`/attendance/${sessionId}/mark`, data);
+    markAttendance: async (
+        courseId: string,
+        sessionId: string,
+        formData: FormData,
+    ) => {
+        const response = await api.post(
+            `/face-recognition/faceId-verify/${courseId}/${sessionId}`,
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            },
+        );
         return response.data;
     },
     verifyLocation: async (
@@ -170,14 +182,14 @@ export const faceRecognitionApi = {
         });
         return response.data;
     },
-    verifyFace: async (imageData: FormData) => {
-        const response = await api.post('/face-recognition/verify', imageData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        });
-        return response.data;
-    },
+    // verifyFace: async (imageData: FormData) => {
+    //     const response = await api.post('/face-recognition/verify', imageData, {
+    //         headers: {
+    //             'Content-Type': 'multipart/form-data',
+    //         },
+    //     });
+    //     return response.data;
+    // },
 };
 
 // Student API endpoints

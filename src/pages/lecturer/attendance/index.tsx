@@ -56,6 +56,55 @@ export default function AttendanceManagementPage() {
     const [selectedCourseId, setSelectedCourseId] = useState<string>('');
     const [isCameraActive, setIsCameraActive] = useState(false);
     const [captureError, setCaptureError] = useState<string | null>(null);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+    // Add state for location coordinates
+    const [locationCoordinates, setLocationCoordinates] = useState<{
+        latitude: number;
+        longitude: number;
+        accuracy: number;
+    } | null>(null);
+    const [locationError, setLocationError] = useState<string | null>(null);
+
+    // Function to get user's current location
+    const getLocation = useCallback(() => {
+        return new Promise<GeolocationPosition>((resolve, reject) => {
+            if (!navigator.geolocation) {
+                reject(
+                    new Error('Geolocation is not supported by your browser'),
+                );
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => resolve(position),
+                (error) => reject(error),
+                {
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 0,
+                },
+            );
+        });
+    }, []);
+
+    // Function to fetch location
+    const fetchLocation = useCallback(async () => {
+        setLocationError(null);
+        try {
+            const position = await getLocation();
+            setLocationCoordinates({
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+                accuracy: position.coords.accuracy,
+            });
+        } catch (locErr) {
+            console.error('Location Error:', locErr);
+            setLocationError(
+                'Failed to get location. Please enable location services and try again.',
+            );
+        }
+    }, [getLocation]);
 
     // Fetch courses on component mount
     useEffect(() => {
@@ -90,11 +139,13 @@ export default function AttendanceManagementPage() {
     useEffect(() => {
         if (selectedSession?._id) {
             fetchAttendanceBySession(selectedSession._id);
+            // Fetch location when session is selected
+            fetchLocation();
         } else {
             // Optionally clear attendance records if no session is selected
             // setAttendanceRecords([]); // Handled by fetchAttendanceBySession if sessionId is empty
         }
-    }, [selectedSession, fetchAttendanceBySession]);
+    }, [selectedSession, fetchAttendanceBySession, fetchLocation]);
 
     const handleSessionChange = (sessionId: string) => {
         const session = sessions.find((s) => s._id === sessionId) || null;
@@ -106,11 +157,12 @@ export default function AttendanceManagementPage() {
 
     // Handle image capture from webcam
     const handleCapture = useCallback(
-        async (imageSrc: string | null) => {
+        async (imageSrc: string) => {
             setCaptureError(null);
+            setSuccessMessage(null);
+
             if (!imageSrc) {
-                // Check if imageSrc is null or empty
-                setCaptureError('Failed to capture image.');
+                setCaptureError('No image captured. Please try again.');
                 return;
             }
             if (!selectedSession?._id) {
@@ -119,27 +171,62 @@ export default function AttendanceManagementPage() {
             }
 
             try {
-                // Convert base64 string to Blob
-                const fetchRes = await fetch(imageSrc);
-                const imageBlob = await fetchRes.blob();
-
-                if (!imageBlob) {
-                    setCaptureError('Failed to process captured image.');
-                    return;
+                // Check location first
+                if (!locationCoordinates) {
+                    await fetchLocation();
+                    if (!locationCoordinates) {
+                        setCaptureError(
+                            'Failed to get location. Please enable location services and try again.',
+                        );
+                        return;
+                    }
                 }
 
-                await markAttendanceWithFace(selectedSession._id, imageBlob); // Pass the converted Blob
-                // TODO: show a success message
+                // Convert base64 to blob properly
+                const base64Data = imageSrc.split(',')[1];
+                const byteCharacters = atob(base64Data);
+                const byteArrays = [];
+
+                for (let i = 0; i < byteCharacters.length; i++) {
+                    byteArrays.push(byteCharacters.charCodeAt(i));
+                }
+
+                const blob = new Blob([new Uint8Array(byteArrays)], {
+                    type: 'image/jpeg',
+                });
+
+                // Log for debugging
+                console.log('Image blob created:', {
+                    size: blob.size,
+                    type: blob.type,
+                });
+
+                const message = await markAttendanceWithFace(
+                    selectedCourseId,
+                    selectedSession._id,
+                    blob,
+                    locationCoordinates,
+                );
+
+                setSuccessMessage(message); // Now TypeScript knows this is a string
+                setCaptureError(null);
+                setIsCameraActive(false);
             } catch (err) {
-                console.error('Capture/Marking Error:', err);
-                setCaptureError(
+                const errorMessage =
                     err instanceof Error
                         ? err.message
-                        : 'Failed to mark attendance.',
-                );
+                        : 'Failed to process attendance';
+                setCaptureError(errorMessage);
+                setSuccessMessage(null);
             }
         },
-        [selectedSession, markAttendanceWithFace],
+        [
+            selectedSession,
+            selectedCourseId,
+            locationCoordinates,
+            fetchLocation,
+            markAttendanceWithFace,
+        ],
     );
 
     const getStatusColor = (status: 'present' | 'absent' | 'late' | string) => {
@@ -294,6 +381,16 @@ export default function AttendanceManagementPage() {
                                         <AlertTitle>Capture Error</AlertTitle>
                                         <AlertDescription>
                                             {captureError}
+                                        </AlertDescription>
+                                    </Alert>
+                                )}
+                                {/* Display Success Messages */}
+                                {successMessage && (
+                                    <Alert className='mb-4 bg-green-50 text-green-700 border-green-200'>
+                                        <AlertCircle className='h-4 w-4' />
+                                        <AlertTitle>Success</AlertTitle>
+                                        <AlertDescription>
+                                            {successMessage}
                                         </AlertDescription>
                                     </Alert>
                                 )}

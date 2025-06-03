@@ -51,6 +51,17 @@ export default function WebcamCapture({
         };
     }, []);
 
+    const captureImage = () => {
+        if (videoRef.current && onCapture) {
+            const canvas = document.createElement('canvas');
+            canvas.width = videoRef.current.videoWidth;
+            canvas.height = videoRef.current.videoHeight;
+            canvas.getContext('2d')?.drawImage(videoRef.current, 0, 0);
+            const imageSrc = canvas.toDataURL('image/jpeg');
+            onCapture(imageSrc);
+        }
+    };
+
     return (
         <div className='relative'>
             <video
@@ -71,10 +82,20 @@ export default function WebcamCapture({
                         Start Camera
                     </Button>
                 ) : (
-                    <Button onClick={stopCamera} variant='destructive'>
-                        <StopCircle className='mr-2 h-4 w-4' />
-                        Stop Camera
-                    </Button>
+                    <>
+                        <Button onClick={stopCamera} variant='destructive'>
+                            <StopCircle className='mr-2 h-4 w-4' />
+                            Stop Camera
+                        </Button>
+                        {onCapture && (
+                            <Button
+                                onClick={captureImage}
+                                className='bg-blue-600 hover:bg-blue-700'
+                            >
+                                Capture
+                            </Button>
+                        )}
+                    </>
                 )}
             </div>
         </div>

@@ -47,9 +47,15 @@ export interface AttendanceContextType {
     error: string | null;
     fetchAttendanceBySession: (sessionId: string) => Promise<void>;
     markAttendanceWithFace: (
+        courseId: string,
         sessionId: string,
-        imageData: Blob,
-    ) => Promise<void>;
+        imageBlob: Blob,
+        locationCoordinates?: {
+            latitude: number;
+            longitude: number;
+            accuracy: number;
+        },
+    ) => Promise<string>; // Changed from Promise<void> to Promise<string>
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
     setError: React.Dispatch<React.SetStateAction<string | null>>;
 }
