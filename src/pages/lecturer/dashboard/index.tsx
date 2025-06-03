@@ -18,12 +18,13 @@ import {ActiveAttendanceSvg} from '@/assets/svg/activeAttendanceSvg.js';
 import {TotalSessionsSvg} from '@/assets/svg/totalSessionsSvg.js';
 import {FlaggedAttendanceSvg} from '@/assets/svg/flaggedAttendanceSvg.js';
 import Analytics from './components/analytics/index.js';
+import Overview from './components/overview.js';
 
 export default function DashboardPage() {
     return (
         <>
             <PageHead title='Dashboard | App' />
-            <div className='max-h-screen flex-1 space-y-4 overflow-y-auto p-4 pt-6 md:p-8'>
+            <div className='h-full flex-1 space-y-4 overflow-y-auto p-4 pt-6 md:p-8'>
                 <div className='flex items-center justify-between space-y-2'>
                     <h2 className='text-3xl font-bold tracking-tight'>
                         Hi, Welcome back 👋
@@ -102,8 +103,8 @@ export default function DashboardPage() {
                                 <CardHeader>
                                     <CardTitle>Overview</CardTitle>
                                 </CardHeader>
-                                <CardContent className='pl-2'>
-                                    {/* <Overview /> */}
+                                <CardContent className='pl-2 overflow-y-auto'>
+                                    <Overview />
                                 </CardContent>
                             </Card>
                             <Card className='col-span-4 md:col-span-3'>

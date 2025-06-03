@@ -1,4 +1,9 @@
-import React, {useState, useEffect, useCallback} from 'react'; // Added useEffect, useCallback
+import React, {useState, useEffect, useCallback} from 'react';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import {Button} from '@/components/ui/button';
+import {Download} from 'lucide-react';
 import {Card, CardContent, CardHeader} from '@/components/ui/card';
 import {
     Select,
@@ -26,6 +31,13 @@ import {useSessionContext} from '@/context/session-context';
 import {useAttendance} from '@/context/attendance-context';
 import {sessionApi} from '@/lib/api';
 import {format} from 'date-fns';
+
+// Add this type augmentation before the component
+declare module 'jspdf' {
+    interface jsPDF {
+        autoTable: (options: any) => jsPDF;
+    }
+}
 
 export default function AttendanceManagementPage() {
     // context states
@@ -247,6 +259,92 @@ export default function AttendanceManagementPage() {
 
     const isCurrentSessionActive = selectedSession?.status === 'active';
 
+    // Add export functions
+    const exportToExcel = () => {
+        const exportData = attendanceRecords.map((record) => ({
+            'Student ID': record.student?.userIdentifier,
+            Name: record.student?.fullName,
+            'Check-in Time':
+                record.captured_at &&
+                format(new Date(record.captured_at), 'PPP p'),
+            Status: record.attendance_status,
+            Location: record.location_status?.replace('_', ' ') || 'N/A',
+            Method: record.verification_method?.replace('_', ' ') || 'N/A',
+        }));
+
+        const ws = XLSX.utils.json_to_sheet(exportData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Attendance');
+        XLSX.writeFile(
+            wb,
+            `attendance_${selectedSession?._id}_${format(
+                new Date(),
+                'yyyy-MM-dd',
+            )}.xlsx`,
+        );
+    };
+
+    const exportToCSV = () => {
+        const exportData = attendanceRecords.map((record) => ({
+            'Student ID': record.student?.userIdentifier,
+            Name: record.student?.fullName,
+            'Check-in Time':
+                record.captured_at &&
+                format(new Date(record.captured_at), 'PPP p'),
+            Status: record.attendance_status,
+            Location: record.location_status?.replace('_', ' ') || 'N/A',
+            Method: record.verification_method?.replace('_', ' ') || 'N/A',
+        }));
+
+        const ws = XLSX.utils.json_to_sheet(exportData);
+        const csv = XLSX.utils.sheet_to_csv(ws);
+        const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `attendance_${selectedSession?._id}_${format(
+            new Date(),
+            'yyyy-MM-dd',
+        )}.csv`;
+        link.click();
+    };
+
+    const exportToPDF = () => {
+        const doc = new jsPDF();
+
+        const tableColumn = [
+            'Student ID',
+            'Name',
+            'Check-in Time',
+            'Status',
+            'Location',
+            'Method',
+        ];
+        const tableRows = attendanceRecords.map((record) => [
+            record.student?.userIdentifier,
+            record.student?.fullName,
+            record.captured_at
+                ? format(new Date(record.captured_at), 'PPP p')
+                : 'N/A',
+            record.attendance_status,
+            record.location_status?.replace('_', ' ') || 'N/A',
+            record.verification_method?.replace('_', ' ') || 'N/A',
+        ]);
+
+        doc.text('Attendance Records', 14, 15);
+        autoTable(doc, {
+            head: [tableColumn],
+            body: tableRows,
+            startY: 20,
+        });
+
+        doc.save(
+            `attendance_${selectedSession?._id}_${format(
+                new Date(),
+                'yyyy-MM-dd',
+            )}.pdf`,
+        );
+    };
+
     return (
         <div className='h-full flex-1 space-y-4 overflow-y-auto p-4 md:p-8'>
             <PageHead title='Attendance Management | App' />
@@ -457,86 +555,128 @@ export default function AttendanceManagementPage() {
                             )}
                             {/* Table */}
                             {!attendanceLoading && (
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead>Student ID</TableHead>
-                                            <TableHead>Name</TableHead>
-                                            <TableHead>Check-in Time</TableHead>
-                                            <TableHead>Status</TableHead>
-                                            <TableHead>Location</TableHead>
-                                            <TableHead>Method</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {attendanceRecords.length === 0 &&
-                                        !attendanceError ? (
+                                <>
+                                    {/* Add this before the Table component inside the Attendance Records Card */}
+                                    {attendanceRecords.length > 0 && (
+                                        <div className='mb-4 flex gap-2'>
+                                            <Button
+                                                size='sm'
+                                                onClick={exportToExcel}
+                                                className='flex items-center gap-2'
+                                            >
+                                                <Download className='h-4 w-4' />
+                                                Export to Excel
+                                            </Button>
+                                            <Button
+                                                size='sm'
+                                                onClick={exportToCSV}
+                                                className='flex items-center gap-2'
+                                            >
+                                                <Download className='h-4 w-4' />
+                                                Export to CSV
+                                            </Button>
+                                            <Button
+                                                size='sm'
+                                                onClick={exportToPDF}
+                                                className='flex items-center gap-2'
+                                            >
+                                                <Download className='h-4 w-4' />
+                                                Export to PDF
+                                            </Button>
+                                        </div>
+                                    )}
+                                    <Table>
+                                        <TableHeader>
                                             <TableRow>
-                                                <TableCell
-                                                    colSpan={6}
-                                                    className='text-center'
-                                                >
-                                                    No attendance records found
-                                                    for this session.
-                                                </TableCell>
+                                                <TableHead>
+                                                    Student ID
+                                                </TableHead>
+                                                <TableHead>Name</TableHead>
+                                                <TableHead>
+                                                    Check-in Time
+                                                </TableHead>
+                                                <TableHead>Status</TableHead>
+                                                <TableHead>Location</TableHead>
+                                                <TableHead>Method</TableHead>
                                             </TableRow>
-                                        ) : (
-                                            // Use updated property names here
-                                            attendanceRecords.map((record) => (
-                                                <TableRow
-                                                    key={record?.student.id}
-                                                >
-                                                    <TableCell>
-                                                        {
-                                                            record.student
-                                                                ?.userIdentifier
-                                                        }
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        {
-                                                            record.student
-                                                                ?.fullName
-                                                        }
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        {/* Use captured_at */}
-                                                        {record.captured_at
-                                                            ? format(
-                                                                  new Date(
-                                                                      record.captured_at,
-                                                                  ),
-                                                                  'p', // 'p' is locale-dependent short time
-                                                              )
-                                                            : 'N/A'}
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Badge
-                                                            className={`${getStatusColor(
-                                                                record.attendance_status,
-                                                            )} text-white`}
-                                                        >
-                                                            {
-                                                                record.attendance_status
-                                                            }
-                                                        </Badge>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        {record.location_status?.replace(
-                                                            '_',
-                                                            ' ',
-                                                        ) || 'N/A'}
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        {record.verification_method?.replace(
-                                                            '_',
-                                                            ' ',
-                                                        ) || 'N/A'}
+                                        </TableHeader>
+                                        <TableBody>
+                                            {attendanceRecords.length === 0 &&
+                                            !attendanceError ? (
+                                                <TableRow>
+                                                    <TableCell
+                                                        colSpan={6}
+                                                        className='text-center'
+                                                    >
+                                                        No attendance records
+                                                        found for this session.
                                                     </TableCell>
                                                 </TableRow>
-                                            ))
-                                        )}
-                                    </TableBody>
-                                </Table>
+                                            ) : (
+                                                // Use updated property names here
+                                                attendanceRecords.map(
+                                                    (record) => (
+                                                        <TableRow
+                                                            key={
+                                                                record?.student
+                                                                    .id
+                                                            }
+                                                        >
+                                                            <TableCell>
+                                                                {
+                                                                    record
+                                                                        .student
+                                                                        ?.userIdentifier
+                                                                }
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {
+                                                                    record
+                                                                        .student
+                                                                        ?.fullName
+                                                                }
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {/* Use captured_at */}
+                                                                {record.captured_at
+                                                                    ? format(
+                                                                          new Date(
+                                                                              record.captured_at,
+                                                                          ),
+                                                                          'p', // 'p' is locale-dependent short time
+                                                                      )
+                                                                    : 'N/A'}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <Badge
+                                                                    className={`${getStatusColor(
+                                                                        record.attendance_status,
+                                                                    )} text-white`}
+                                                                >
+                                                                    {
+                                                                        record.attendance_status
+                                                                    }
+                                                                </Badge>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {record.location_status?.replace(
+                                                                    '_',
+                                                                    ' ',
+                                                                ) || 'N/A'}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {record.verification_method?.replace(
+                                                                    '_',
+                                                                    ' ',
+                                                                ) || 'N/A'}
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ),
+                                                )
+                                            )}
+                                        </TableBody>
+                                    </Table>
+                                </>
                             )}
                         </CardContent>
                     </Card>
