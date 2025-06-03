@@ -38,24 +38,20 @@ export interface SessionAttendanceResponse {
     message: string;
 }
 
-export interface AttendanceContextType {
+export type AttendanceContextType = {
     attendanceRecords: AttendanceRecord[];
     setAttendanceRecords: React.Dispatch<
         React.SetStateAction<AttendanceRecord[]>
     >;
     loading: boolean;
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
     error: string | null;
+    setError: React.Dispatch<React.SetStateAction<string | null>>;
     fetchAttendanceBySession: (sessionId: string) => Promise<void>;
     markAttendanceWithFace: (
         courseId: string,
         sessionId: string,
         imageBlob: Blob,
-        locationCoordinates?: {
-            latitude: number;
-            longitude: number;
-            accuracy: number;
-        },
-    ) => Promise<string>; // Changed from Promise<void> to Promise<string>
-    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-    setError: React.Dispatch<React.SetStateAction<string | null>>;
-}
+        locationCoordinates?: any,
+    ) => Promise<{success: boolean; message: string}>;
+};

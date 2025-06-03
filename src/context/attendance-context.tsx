@@ -58,7 +58,6 @@ export const AttendanceProvider: React.FC<AttendanceProviderProps> = ({
 
             setAttendanceRecords(records);
         } catch (err) {
-            // Keep the 404 handling as before
             if (err instanceof AxiosError && err.response?.status === 404) {
                 setAttendanceRecords([]);
                 console.log(
@@ -85,7 +84,7 @@ export const AttendanceProvider: React.FC<AttendanceProviderProps> = ({
             sessionId: string,
             imageBlob: Blob,
             locationCoordinates: any = null,
-        ): Promise<string> => {
+        ): Promise<{success: boolean; message: string}> => {
             if (!sessionId || !imageBlob) {
                 throw new Error('Missing required parameters');
             }
@@ -123,13 +122,18 @@ export const AttendanceProvider: React.FC<AttendanceProviderProps> = ({
                 // Refresh attendance list after marking
                 await fetchAttendanceBySession(sessionId);
 
-                // Return success message from response or fallback message
-                return response?.message || 'Attendance marked successfully';
+                return {
+                    success: response?.success ?? true,
+                    message:
+                        response?.message || 'Attendance marked successfully',
+                };
             } catch (err) {
                 const errorMessage =
-                    err instanceof Error
-                        ? err.message
-                        : 'Failed to mark attendance via face recognition';
+                    err instanceof AxiosError
+                        ? err.response?.data?.message || err.message
+                        : err instanceof Error
+                          ? err.message
+                          : 'Failed to mark attendance via face recognition';
                 setError(errorMessage);
                 throw new Error(errorMessage);
             } finally {

@@ -201,15 +201,18 @@ export default function AttendanceManagementPage() {
                     type: blob.type,
                 });
 
-                const message = await markAttendanceWithFace(
+                const response = await markAttendanceWithFace(
                     selectedCourseId,
                     selectedSession._id,
                     blob,
                     locationCoordinates,
                 );
 
-                setSuccessMessage(message); // Now TypeScript knows this is a string
-                setCaptureError(null);
+                if (response.success) {
+                    setSuccessMessage(response.message);
+                } else {
+                    setCaptureError(response.message);
+                }
                 setIsCameraActive(false);
             } catch (err) {
                 const errorMessage =
