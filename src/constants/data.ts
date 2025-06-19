@@ -19,6 +19,12 @@ export const lecturerNavItems: NavItem[] = [
         icon: 'user',
         label: 'attendance',
     },
+    {
+        title: 'Attendance Scores',
+        href: '/app/scores',
+        icon: 'chart',
+        label: 'scores',
+    },
 ];
 
 export const studentNavItems: NavItem[] = [

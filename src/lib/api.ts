@@ -112,6 +112,11 @@ export const attendanceApi = {
         console.log(response);
         return response.data;
     },
+    // Add new endpoint for course attendance scores
+    getCourseAttendanceScores: async (courseId: string) => {
+        const response = await api.get(`/attendance-scores/course/${courseId}`);
+        return response.data;
+    },
     markAttendance: async (
         courseId: string,
         sessionId: string,

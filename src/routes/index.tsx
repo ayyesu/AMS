@@ -5,6 +5,7 @@ import {ErrorBoundary} from '@/components/error-boundary';
 import AuthGuard from '@/components/auth/auth-guard';
 import LecturerProfile from '@/pages/lecturer/profile';
 import CourseSessionPage from '@/pages/lecturer/courses/SessionMgtPage';
+import AttendanceScoresPage from '@/pages/lecturer/scores';
 
 const DashboardLayout = lazy(
     () => import('@/components/layout/dashboard-layout'),
@@ -56,6 +57,10 @@ export default function AppRouter() {
                 {
                     path: 'attendance',
                     element: <AttendanceManagementPage />,
+                },
+                {
+                    path: '/app/scores',
+                    element: <AttendanceScoresPage />,
                 },
                 {
                     path: 'profile/:id',
