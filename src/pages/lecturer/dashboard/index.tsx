@@ -12,7 +12,7 @@ import {
     TabsList,
     TabsTrigger,
 } from '@/components/ui/tabs.js';
-import RecentSales from './components/system-status.js';
+import SystemStatus from './components/system-status.js';
 import {CoursesSvg} from '@/assets/svg/coursesSvg.js';
 import {ActiveAttendanceSvg} from '@/assets/svg/activeAttendanceSvg.js';
 import {TotalSessionsSvg} from '@/assets/svg/totalSessionsSvg.js';
@@ -115,7 +115,7 @@ export default function DashboardPage() {
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent>
-                                    <RecentSales />
+                                    <SystemStatus />
                                 </CardContent>
                             </Card>
                         </div>

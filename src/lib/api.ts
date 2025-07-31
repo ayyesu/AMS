@@ -216,4 +216,12 @@ export const studentApi = {
     },
 };
 
+// System Status API endpoint
+export const systemApi = {
+    getStatus: async () => {
+        const response = await api.get('/system/status');
+        return response.data;
+    },
+};
+
 export default api;
