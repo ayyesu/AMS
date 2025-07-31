@@ -2,6 +2,7 @@ import {ReactNode, useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useToast} from '@/components/ui/use-toast';
 import {authApi} from '@/lib/api';
+import {SignInOrbit} from '@/pages/auth/signin/components/signinOrbit';
 
 interface AuthGuardProps {
     children: ReactNode;
@@ -53,7 +54,13 @@ export default function AuthGuard({children, allowedRoles}: AuthGuardProps) {
     }, [navigate, allowedRoles, toast]);
 
     if (isLoading) {
-        return <div>Loading...</div>; // TODO: We need to add a spinner here
+        return (
+            <div className="flex h-screen items-center justify-center">
+                <div className="w-64 h-64">
+                    <SignInOrbit />
+                </div>
+            </div>
+        );
     }
 
     return <>{children}</>;
