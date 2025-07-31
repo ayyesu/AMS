@@ -358,54 +358,82 @@ export default function CourseSessionPage() {
                     </CardHeader>
                     <CardContent>
                         <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                            <input
-                                type='text'
-                                placeholder='Session Topic'
-                                value={newSession.topic}
-                                onChange={(e) =>
-                                    setNewSession({
-                                        ...newSession,
-                                        topic: e.target.value,
-                                    })
-                                }
-                                className='border p-2 rounded transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
-                            />
-                            <input
-                                type='date'
-                                value={newSession.date}
-                                onChange={(e) =>
-                                    setNewSession({
-                                        ...newSession,
-                                        date: e.target.value,
-                                    })
-                                }
-                                className='border p-2 rounded transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
-                            />
-                            <input
-                                type='time'
-                                value={newSession.time}
-                                onChange={(e) =>
-                                    setNewSession({
-                                        ...newSession,
-                                        time: e.target.value,
-                                    })
-                                }
-                                className='border p-2 rounded transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
-                            />
-                            <input
-                                type='text'
-                                placeholder='Duration (e.g., 2 hours)'
-                                value={newSession.duration}
-                                onChange={(e) =>
-                                    setNewSession({
-                                        ...newSession,
-                                        duration: e.target.value,
-                                    })
-                                }
-                                className='border p-2 rounded transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
-                            />
-                            <div className='space-y-2'>
+                            <div className="space-y-2">
+                                <label htmlFor="session-topic" className="block text-sm font-medium">
+                                    Session Topic
+                                </label>
                                 <input
+                                    id="session-topic"
+                                    type='text'
+                                    placeholder='Session Topic'
+                                    value={newSession.topic}
+                                    onChange={(e) =>
+                                        setNewSession({
+                                            ...newSession,
+                                            topic: e.target.value,
+                                        })
+                                    }
+                                    className='w-full border p-2 rounded transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label htmlFor="session-date" className="block text-sm font-medium">
+                                    Date
+                                </label>
+                                <input
+                                    id="session-date"
+                                    type='date'
+                                    value={newSession.date}
+                                    onChange={(e) =>
+                                        setNewSession({
+                                            ...newSession,
+                                            date: e.target.value,
+                                        })
+                                    }
+                                    className='w-full border p-2 rounded transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label htmlFor="session-time" className="block text-sm font-medium">
+                                    Time
+                                </label>
+                                <input
+                                    id="session-time"
+                                    type='time'
+                                    value={newSession.time}
+                                    onChange={(e) =>
+                                        setNewSession({
+                                            ...newSession,
+                                            time: e.target.value,
+                                        })
+                                    }
+                                    className='w-full border p-2 rounded transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label htmlFor="session-duration" className="block text-sm font-medium">
+                                    Duration
+                                </label>
+                                <input
+                                    id="session-duration"
+                                    type='text'
+                                    placeholder='Duration (e.g., 2 hours)'
+                                    value={newSession.duration}
+                                    onChange={(e) =>
+                                        setNewSession({
+                                            ...newSession,
+                                            duration: e.target.value,
+                                        })
+                                    }
+                                    className='w-full border p-2 rounded transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
+                                />
+                            </div>
+                            <div className='space-y-2'>
+                                <label htmlFor="location-name" className="block text-sm font-medium">
+                                    Location Name
+                                </label>
+                                <input
+                                    id="location-name"
                                     type='text'
                                     placeholder='Location Name'
                                     value={newSession.location.name}
@@ -418,24 +446,38 @@ export default function CourseSessionPage() {
                                             },
                                         })
                                     }
-                                    className='border p-2 rounded w-full transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
+                                    className='w-full border p-2 rounded transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
                                 />
-                                <div className='grid grid-cols-2 gap-2'>
+                            </div>
+                            <div className='grid grid-cols-2 gap-2'>
+                                <div className="space-y-2">
+                                    <label htmlFor="location-latitude" className="block text-sm font-medium">
+                                        Latitude
+                                    </label>
                                     <input
+                                        id="location-latitude"
                                         type='text'
                                         placeholder='Latitude'
                                         value={newSession.location.latitude}
                                         readOnly
-                                        className='border p-2 rounded w-full transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
+                                        className='w-full border p-2 rounded transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
                                     />
+                                </div>
+                                <div className="space-y-2">
+                                    <label htmlFor="location-longitude" className="block text-sm font-medium">
+                                        Longitude
+                                    </label>
                                     <input
+                                        id="location-longitude"
                                         type='text'
                                         placeholder='Longitude'
                                         value={newSession.location.longitude}
                                         readOnly
-                                        className='border p-2 rounded w-full transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
+                                        className='w-full border p-2 rounded transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
                                     />
                                 </div>
+                            </div>
+                            <div className='space-y-2'>
                                 <Button
                                     onClick={detectCurrentLocation}
                                     className='w-full'
@@ -445,7 +487,11 @@ export default function CourseSessionPage() {
                                 </Button>
                             </div>
                             <div className='space-y-2'>
+                                <label htmlFor="attendance-type" className="block text-sm font-medium">
+                                    Attendance Method
+                                </label>
                                 <select
+                                    id="attendance-type"
                                     value={newSession.attendance_type}
                                     onChange={(e) =>
                                         setNewSession({
@@ -453,7 +499,7 @@ export default function CourseSessionPage() {
                                             attendance_type: e.target.value,
                                         })
                                     }
-                                    className='border p-2 rounded w-full transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
+                                    className='w-full border p-2 rounded transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
                                 >
                                     <option value='face_recognition'>
                                         Lecturer Based
@@ -462,11 +508,51 @@ export default function CourseSessionPage() {
                                         Student Based
                                     </option>
                                 </select>
+                            </div>
 
-                                <div className='space-y-2'>
-                                    <div className='flex items-center gap-2 mb-2'>
+                            <div className='space-y-2'>
+                                <div className='flex items-center gap-2 mb-2'>
+                                    <label className='text-sm font-medium'>
+                                        Hall Size
+                                    </label>
+                                    <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger>
+                                                <InfoIcon className='h-4 w-4 text-muted-foreground' />
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                <p>
+                                                    Select hall size for
+                                                    recommended radius
+                                                </p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>
+                                </div>
+                                <Select
+                                    onValueChange={handleHallSizeChange}
+                                >
+                                    <SelectTrigger className='w-full'>
+                                        <SelectValue placeholder='Select hall size' />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {Object.entries(
+                                            hallSizeRecommendations,
+                                        ).map(([key, value]) => (
+                                            <SelectItem
+                                                key={key}
+                                                value={key}
+                                            >
+                                                {value.size}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+
+                                <div className='mt-4'>
+                                    <div className='flex items-center justify-between'>
                                         <label className='text-sm font-medium'>
-                                            Hall Size
+                                            Radius Limit (meters)
                                         </label>
                                         <TooltipProvider>
                                             <Tooltip>
@@ -474,118 +560,78 @@ export default function CourseSessionPage() {
                                                     <InfoIcon className='h-4 w-4 text-muted-foreground' />
                                                 </TooltipTrigger>
                                                 <TooltipContent>
-                                                    <p>
-                                                        Select hall size for
-                                                        recommended radius
-                                                    </p>
+                                                    <div className='space-y-2'>
+                                                        <p className='font-medium'>
+                                                            Recommended
+                                                            Ranges:
+                                                        </p>
+                                                        <ul className='text-sm'>
+                                                            <li>
+                                                                Small Hall:
+                                                                20m
+                                                            </li>
+                                                            <li>
+                                                                Medium Hall:
+                                                                35m
+                                                            </li>
+                                                            <li>
+                                                                Large Hall:
+                                                                50m
+                                                            </li>
+                                                            <li>
+                                                                Auditorium:
+                                                                75m
+                                                            </li>
+                                                        </ul>
+                                                    </div>
                                                 </TooltipContent>
                                             </Tooltip>
                                         </TooltipProvider>
                                     </div>
-                                    <Select
-                                        onValueChange={handleHallSizeChange}
-                                    >
-                                        <SelectTrigger className='w-full'>
-                                            <SelectValue placeholder='Select hall size' />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {Object.entries(
-                                                hallSizeRecommendations,
-                                            ).map(([key, value]) => (
-                                                <SelectItem
-                                                    key={key}
-                                                    value={key}
-                                                >
-                                                    {value.size}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-
-                                    <div className='mt-4'>
-                                        <div className='flex items-center justify-between'>
-                                            <label className='text-sm font-medium'>
-                                                Radius Limit (meters)
-                                            </label>
-                                            <TooltipProvider>
-                                                <Tooltip>
-                                                    <TooltipTrigger>
-                                                        <InfoIcon className='h-4 w-4 text-muted-foreground' />
-                                                    </TooltipTrigger>
-                                                    <TooltipContent>
-                                                        <div className='space-y-2'>
-                                                            <p className='font-medium'>
-                                                                Recommended
-                                                                Ranges:
-                                                            </p>
-                                                            <ul className='text-sm'>
-                                                                <li>
-                                                                    Small Hall:
-                                                                    20m
-                                                                </li>
-                                                                <li>
-                                                                    Medium Hall:
-                                                                    35m
-                                                                </li>
-                                                                <li>
-                                                                    Large Hall:
-                                                                    50m
-                                                                </li>
-                                                                <li>
-                                                                    Auditorium:
-                                                                    75m
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </TooltipContent>
-                                                </Tooltip>
-                                            </TooltipProvider>
-                                        </div>
-                                        <div className='flex items-center gap-2'>
-                                            <input
-                                                type='range'
-                                                min='10'
-                                                max='100'
-                                                step='5'
-                                                value={newSession.radius}
-                                                onChange={(e) =>
-                                                    setNewSession({
-                                                        ...newSession,
-                                                        radius: parseInt(
-                                                            e.target.value,
-                                                        ),
-                                                    })
-                                                }
-                                                className='flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700'
-                                            />
-                                            <input
-                                                type='number'
-                                                value={newSession.radius}
-                                                onChange={(e) =>
-                                                    setNewSession({
-                                                        ...newSession,
-                                                        radius:
-                                                            parseInt(
-                                                                e.target.value,
-                                                            ) || 0,
-                                                    })
-                                                }
-                                                className='w-20 border p-2 rounded text-center dark:bg-gray-700 dark:border-gray-600 dark:text-white'
-                                                min='10'
-                                                max='100'
-                                            />
-                                        </div>
-                                        <div className='mt-1 text-sm text-muted-foreground'>
-                                            Coverage area: ~
-                                            {Math.round(
-                                                Math.PI *
-                                                    Math.pow(
-                                                        newSession.radius,
-                                                        2,
+                                    <div className='flex items-center gap-2'>
+                                        <input
+                                            type='range'
+                                            min='10'
+                                            max='100'
+                                            step='5'
+                                            value={newSession.radius}
+                                            onChange={(e) =>
+                                                setNewSession({
+                                                    ...newSession,
+                                                    radius: parseInt(
+                                                        e.target.value,
                                                     ),
-                                            )}
-                                            m²
-                                        </div>
+                                                })
+                                            }
+                                            className='flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700'
+                                        />
+                                        <input
+                                            type='number'
+                                            value={newSession.radius}
+                                            onChange={(e) =>
+                                                setNewSession({
+                                                    ...newSession,
+                                                    radius:
+                                                        parseInt(
+                                                            e.target.value,
+                                                        ) || 0,
+                                                })
+                                            }
+                                            className='w-20 border p-2 rounded text-center dark:bg-gray-700 dark:border-gray-600 dark:text-white'
+                                            min='10'
+                                            max='100'
+                                        />
+                                    </div>
+                                    <div className='mt-1 text-sm text-muted-foreground'>
+                                        Coverage area: ~
+                                        {Math.round(
+                                            Math.PI *
+                                                Math.pow(
+                                                    newSession.radius,
+                                                    2,
+                                                ),
+                                        )}
+                                        m²
                                     </div>
                                 </div>
                             </div>
