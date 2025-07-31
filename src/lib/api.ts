@@ -224,4 +224,12 @@ export const systemApi = {
     },
 };
 
+// Dashboard API endpoints
+export const dashboardApi = {
+    getLecturerDashboard: async () => {
+        const response = await api.get('/dashboard/lecturer');
+        return response.data;
+    },
+};
+
 export default api;
