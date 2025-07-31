@@ -230,6 +230,18 @@ export const dashboardApi = {
         const response = await api.get('/dashboard/lecturer');
         return response.data;
     },
+    getMonthlyAttendance: async () => {
+        const response = await api.get('/dashboard/attendance/monthly');
+        return response.data;
+    },
+    getFacialRecognitionAccuracy: async () => {
+        const response = await api.get('/dashboard/facial-recognition/accuracy');
+        return response.data;
+    },
+    getAttendanceDistribution: async () => {
+        const response = await api.get('/dashboard/attendance/distribution');
+        return response.data;
+    },
 };
 
 export default api;
