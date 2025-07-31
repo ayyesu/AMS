@@ -9,6 +9,7 @@ export default {
   	extend: {
       animation: {
         orbit: "orbit calc(var(--duration)*1s) linear infinite",
+        'spin-slow': 'spin 3s linear infinite',
       },
       keyframes: {
         orbit: {
