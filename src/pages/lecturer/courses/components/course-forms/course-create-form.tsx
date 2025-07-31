@@ -12,6 +12,7 @@ import {
     FormControl,
     FormField,
     FormItem,
+    FormLabel,
     FormMessage,
 } from '@/components/ui/form';
 import {Input} from '@/components/ui/input';
@@ -118,17 +119,18 @@ const CourseCreateForm = ({modalClose}: {modalClose: () => void}) => {
                     className='space-y-4'
                     autoComplete='off'
                 >
-                    <div className='grid grid-cols-2 gap-x-8 gap-y-4'>
+                    <div className='grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4'>
                         <FormField
                             control={form.control}
                             name='course_code'
                             render={({field}) => (
                                 <FormItem>
+                                    <FormLabel className="text-base font-semibold">Course Code</FormLabel>
                                     <FormControl>
                                         <Input
                                             placeholder='Enter the course code'
                                             {...field}
-                                            className=' px-4 py-6 shadow-inner drop-shadow-xl'
+                                            className='px-4 py-6 shadow-inner drop-shadow-xl'
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -140,11 +142,12 @@ const CourseCreateForm = ({modalClose}: {modalClose: () => void}) => {
                             name='name'
                             render={({field}) => (
                                 <FormItem>
+                                    <FormLabel className="text-base font-semibold">Course Name</FormLabel>
                                     <FormControl>
                                         <Input
                                             placeholder='Enter the course name'
                                             {...field}
-                                            className=' px-4 py-6 shadow-inner drop-shadow-xl'
+                                            className='px-4 py-6 shadow-inner drop-shadow-xl'
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -156,6 +159,7 @@ const CourseCreateForm = ({modalClose}: {modalClose: () => void}) => {
                             name='semester'
                             render={({field}) => (
                                 <FormItem>
+                                    <FormLabel className="text-base font-semibold">Semester</FormLabel>
                                     <FormControl>
                                         <Input
                                             type='number'
@@ -180,39 +184,38 @@ const CourseCreateForm = ({modalClose}: {modalClose: () => void}) => {
                             name='academic_year'
                             render={({field}) => (
                                 <FormItem className="space-y-2">
+                                    <FormLabel className="text-base font-semibold">Academic Year</FormLabel>
                                     <FormControl>
-                                        <div className="flex items-center">
+                                        <div className="flex items-center space-x-2 rounded-md border border-input bg-background px-3 shadow-inner drop-shadow-xl">
                                             <Input
                                                 type="number"
                                                 min={2000}
                                                 max={2100}
                                                 placeholder="Start year"
                                                 value={field.value.split('/')[0] || ''}
-                                                className="px-4 py-6 shadow-inner drop-shadow-xl"
+                                                className="border-0 shadow-none px-1 py-6 focus-visible:ring-0 focus-visible:ring-offset-0"
                                                 onChange={(e) => {
                                                     const startYear = e.target.value;
                                                     const endYear = field.value.split('/')[1] || '';
                                                     if (startYear && endYear && parseInt(startYear) >= parseInt(endYear)) {
-                                                        // Automatically set end year to start year + 1 if invalid
                                                         field.onChange(`${startYear}/${parseInt(startYear) + 1}`);
                                                     } else {
                                                         field.onChange(`${startYear}${endYear ? '/' + endYear : ''}`);
                                                     }
                                                 }}
                                             />
-                                            <span className="mx-2 text-lg font-bold">/</span>
+                                            <span className="text-lg font-bold">/</span>
                                             <Input
                                                 type="number"
                                                 min={2000}
                                                 max={2100}
                                                 placeholder="End year"
                                                 value={field.value.split('/')[1] || ''}
-                                                className="px-4 py-6 shadow-inner drop-shadow-xl"
+                                                className="border-0 shadow-none px-1 py-6 focus-visible:ring-0 focus-visible:ring-offset-0"
                                                 onChange={(e) => {
                                                     const startYear = field.value.split('/')[0] || '';
                                                     const endYear = e.target.value;
                                                     if (startYear && endYear && parseInt(startYear) >= parseInt(endYear)) {
-                                                        // Show error message but still allow typing
                                                         field.onChange(`${startYear}/${endYear}`);
                                                     } else {
                                                         field.onChange(`${startYear ? startYear + '/' : ''}${endYear}`);
@@ -223,7 +226,7 @@ const CourseCreateForm = ({modalClose}: {modalClose: () => void}) => {
                                     </FormControl>
                                     <FormMessage />
                                     {field.value && field.value.includes('/') && 
-                                     parseInt(field.value.split('/')[0]) >= parseInt(field.value.split('/')[1]) && (
+                                        parseInt(field.value.split('/')[0]) >= parseInt(field.value.split('/')[1]) && (
                                         <p className="text-sm text-red-500">Start year must be less than end year</p>
                                     )}
                                 </FormItem>
@@ -234,12 +237,13 @@ const CourseCreateForm = ({modalClose}: {modalClose: () => void}) => {
                             name='status'
                             render={({field}) => (
                                 <FormItem>
+                                    <FormLabel className="text-base font-semibold">Status</FormLabel>
                                     <FormControl>
                                         <Select
                                             onValueChange={field.onChange}
                                             value={field.value}
                                         >
-                                            <SelectTrigger>
+                                            <SelectTrigger className="px-4 py-6 shadow-inner drop-shadow-xl">
                                                 <SelectValue placeholder='Select status' />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -264,6 +268,7 @@ const CourseCreateForm = ({modalClose}: {modalClose: () => void}) => {
                             name='isEnrollmentOpen'
                             render={({field}) => (
                                 <FormItem>
+                                    <FormLabel className="text-base font-semibold">Enrollment Status</FormLabel>
                                     <FormControl>
                                         <Select
                                             onValueChange={(value) =>
@@ -271,7 +276,7 @@ const CourseCreateForm = ({modalClose}: {modalClose: () => void}) => {
                                             }
                                             value={field.value.toString()}
                                         >
-                                            <SelectTrigger>
+                                            <SelectTrigger className="px-4 py-6 shadow-inner drop-shadow-xl">
                                                 <SelectValue placeholder='Select enrollment status' />
                                             </SelectTrigger>
                                             <SelectContent>
