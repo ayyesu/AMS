@@ -190,15 +190,53 @@ export default function CourseUpdateForm({
                             control={form.control}
                             name='academic_year'
                             render={({field}) => (
-                                <FormItem>
+                                <FormItem className="space-y-2">
                                     <FormControl>
-                                        <Input
-                                            placeholder='Enter academic year (YYYY/YYYY)'
-                                            {...field}
-                                            className='px-4 py-6 shadow-inner drop-shadow-xl'
-                                        />
+                                        <div className="flex items-center">
+                                            <Input
+                                                type="number"
+                                                min={2000}
+                                                max={2100}
+                                                placeholder="Start year"
+                                                value={field.value.split('/')[0] || ''}
+                                                className="px-4 py-6 shadow-inner drop-shadow-xl"
+                                                onChange={(e) => {
+                                                    const startYear = e.target.value;
+                                                    const endYear = field.value.split('/')[1] || '';
+                                                    if (startYear && endYear && parseInt(startYear) >= parseInt(endYear)) {
+                                                        // Automatically set end year to start year + 1 if invalid
+                                                        field.onChange(`${startYear}/${parseInt(startYear) + 1}`);
+                                                    } else {
+                                                        field.onChange(`${startYear}${endYear ? '/' + endYear : ''}`);
+                                                    }
+                                                }}
+                                            />
+                                            <span className="mx-2 text-lg font-bold">/</span>
+                                            <Input
+                                                type="number"
+                                                min={2000}
+                                                max={2100}
+                                                placeholder="End year"
+                                                value={field.value.split('/')[1] || ''}
+                                                className="px-4 py-6 shadow-inner drop-shadow-xl"
+                                                onChange={(e) => {
+                                                    const startYear = field.value.split('/')[0] || '';
+                                                    const endYear = e.target.value;
+                                                    if (startYear && endYear && parseInt(startYear) >= parseInt(endYear)) {
+                                                        // Show error message but still allow typing
+                                                        field.onChange(`${startYear}/${endYear}`);
+                                                    } else {
+                                                        field.onChange(`${startYear ? startYear + '/' : ''}${endYear}`);
+                                                    }
+                                                }}
+                                            />
+                                        </div>
                                     </FormControl>
                                     <FormMessage />
+                                    {field.value && field.value.includes('/') && 
+                                     parseInt(field.value.split('/')[0]) >= parseInt(field.value.split('/')[1]) && (
+                                        <p className="text-sm text-red-500">Start year must be less than end year</p>
+                                    )}
                                 </FormItem>
                             )}
                         />
