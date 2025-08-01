@@ -25,7 +25,7 @@ export default function DashboardLayout({
             <div className='flex w-0 flex-1 flex-col overflow-hidden'>
                 <div className='xl:hidden'>
                     <button
-                        className='pl-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500'
+                        className='pl-4 pt-2 text-foreground focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary'
                         onClick={() => setSidebarOpen(true)}
                     >
                         <span className='sr-only'>Open sidebar</span>
