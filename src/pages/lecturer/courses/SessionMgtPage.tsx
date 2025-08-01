@@ -57,7 +57,10 @@ export default function CourseSessionPage() {
         topic: '',
         date: '',
         time: '',
-        duration: '',
+        duration: {
+            hours: 1,
+            minutes: 0
+        },
         location: {
             name: '',
             latitude: '',
@@ -127,7 +130,7 @@ export default function CourseSessionPage() {
                 !newSession.topic ||
                 !newSession.date ||
                 !newSession.time ||
-                !newSession.duration
+                (newSession.duration.hours === 0 && newSession.duration.minutes === 0)
             ) {
                 toast({
                     title: 'Error',
@@ -156,7 +159,10 @@ export default function CourseSessionPage() {
             const response = await sessionApi.create({
                 course: courseId,
                 topic: newSession.topic,
-                duration: parseInt(newSession.duration),
+                duration: {
+                    hours: newSession.duration.hours,
+                    minutes: newSession.duration.minutes
+                },
                 session_date: sessionDate,
                 status: newSession.status,
                 attendance_weight: newSession.attendance_weight,
@@ -411,22 +417,65 @@ export default function CourseSessionPage() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="session-duration" className="block text-sm font-medium">
+                                <label className="block text-sm font-medium">
                                     Duration
                                 </label>
-                                <input
-                                    id="session-duration"
-                                    type='text'
-                                    placeholder='Duration (e.g., 2 hours)'
-                                    value={newSession.duration}
-                                    onChange={(e) =>
-                                        setNewSession({
-                                            ...newSession,
-                                            duration: e.target.value,
-                                        })
-                                    }
-                                    className='w-full border p-2 rounded transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
-                                />
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-1">
+                                        <label htmlFor="duration-hours" className="text-xs text-muted-foreground">
+                                            Hours
+                                        </label>
+                                        <div className="flex">
+                                            <input
+                                                id="duration-hours"
+                                                type="number"
+                                                min="0"
+                                                value={newSession.duration.hours}
+                                                onChange={(e) =>
+                                                    setNewSession({
+                                                        ...newSession,
+                                                        duration: {
+                                                            ...newSession.duration,
+                                                            hours: parseInt(e.target.value) || 0,
+                                                        },
+                                                    })
+                                                }
+                                                className="w-full border p-2 rounded-l transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                            />
+                                            <div className="bg-muted flex items-center px-3 rounded-r border border-l-0 transition-colors duration-300 dark:bg-gray-600 dark:border-gray-500">
+                                                <span className="text-sm">hr</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label htmlFor="duration-minutes" className="text-xs text-muted-foreground">
+                                            Minutes
+                                        </label>
+                                        <div className="flex">
+                                            <input
+                                                id="duration-minutes"
+                                                type="number"
+                                                min="0"
+                                                max="59"
+                                                value={newSession.duration.minutes}
+                                                onChange={(e) => {
+                                                    const minutes = parseInt(e.target.value) || 0;
+                                                    setNewSession({
+                                                        ...newSession,
+                                                        duration: {
+                                                            ...newSession.duration,
+                                                            minutes: minutes > 59 ? 59 : minutes,
+                                                        },
+                                                    });
+                                                }}
+                                                className="w-full border p-2 rounded-l transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                            />
+                                            <div className="bg-muted flex items-center px-3 rounded-r border border-l-0 transition-colors duration-300 dark:bg-gray-600 dark:border-gray-500">
+                                                <span className="text-sm">min</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div className='space-y-2'>
                                 <label htmlFor="location-name" className="block text-sm font-medium">
