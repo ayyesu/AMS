@@ -58,9 +58,9 @@ export default function AuthGuard({children, allowedRoles}: AuthGuardProps) {
             <div className="flex h-screen items-center justify-center bg-background">
                 <div className="relative w-[300px] h-[300px] flex items-center justify-center">
                     {/* AMS Logo in center */}
-                    <div className="text-6xl font-bold text-gray-700">AMS</div>
+                    <div className="text-6xl font-bold text-gray-700 dark:text-gray-300">AMS</div>
                     {/* Spinner around the text */}
-                    <div className="absolute inset-0 rounded-full border-4 border-gray-200"></div>
+                    <div className="absolute inset-0 rounded-full border-4 border-gray-200 dark:border-gray-700"></div>
                     <div className="absolute inset-0 rounded-full border-t-4 border-primary animate-spin"></div>
                 </div>
             </div>
