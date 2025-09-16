@@ -458,7 +458,8 @@ export default function AttendanceManagementPage() {
                 {/* Facial Recognition Section */}
                 {selectedSession &&
                     isCurrentSessionActive &&
-                    selectedSession.attendance_type === 'face_recognition' && (
+                    (selectedSession.attendance_type === 'face_recognition' ||
+                        selectedSession.attendance_type === 'hybrid') && (
                         <Card>
                             <CardHeader className='text-xl font-bold'>
                                 Facial Recognition Attendance

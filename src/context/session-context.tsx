@@ -14,7 +14,7 @@ interface Session {
     session_date: Date;
     status: 'active' | 'inactive';
     attendance_weight: number;
-    attendance_type: 'face_recognition' | 'student_based';
+    attendance_type: 'face_recognition' | 'student_based' | 'hybrid';
     location: Location;
     created_at: Date;
 }

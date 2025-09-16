@@ -59,7 +59,7 @@ export default function CourseSessionPage() {
         time: '',
         duration: {
             hours: 1,
-            minutes: 0
+            minutes: 0,
         },
         location: {
             name: '',
@@ -130,7 +130,8 @@ export default function CourseSessionPage() {
                 !newSession.topic ||
                 !newSession.date ||
                 !newSession.time ||
-                (newSession.duration.hours === 0 && newSession.duration.minutes === 0)
+                (newSession.duration.hours === 0 &&
+                    newSession.duration.minutes === 0)
             ) {
                 toast({
                     title: 'Error',
@@ -161,7 +162,7 @@ export default function CourseSessionPage() {
                 topic: newSession.topic,
                 duration: {
                     hours: newSession.duration.hours,
-                    minutes: newSession.duration.minutes
+                    minutes: newSession.duration.minutes,
                 },
                 session_date: sessionDate,
                 status: newSession.status,
@@ -364,12 +365,15 @@ export default function CourseSessionPage() {
                     </CardHeader>
                     <CardContent>
                         <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                            <div className="space-y-2">
-                                <label htmlFor="session-topic" className="block text-sm font-medium">
+                            <div className='space-y-2'>
+                                <label
+                                    htmlFor='session-topic'
+                                    className='block text-sm font-medium'
+                                >
                                     Session Topic
                                 </label>
                                 <input
-                                    id="session-topic"
+                                    id='session-topic'
                                     type='text'
                                     placeholder='Session Topic'
                                     value={newSession.topic}
@@ -382,12 +386,15 @@ export default function CourseSessionPage() {
                                     className='w-full border p-2 rounded transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
                                 />
                             </div>
-                            <div className="space-y-2">
-                                <label htmlFor="session-date" className="block text-sm font-medium">
+                            <div className='space-y-2'>
+                                <label
+                                    htmlFor='session-date'
+                                    className='block text-sm font-medium'
+                                >
                                     Date
                                 </label>
                                 <input
-                                    id="session-date"
+                                    id='session-date'
                                     type='date'
                                     value={newSession.date}
                                     onChange={(e) =>
@@ -399,12 +406,15 @@ export default function CourseSessionPage() {
                                     className='w-full border p-2 rounded transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
                                 />
                             </div>
-                            <div className="space-y-2">
-                                <label htmlFor="session-time" className="block text-sm font-medium">
+                            <div className='space-y-2'>
+                                <label
+                                    htmlFor='session-time'
+                                    className='block text-sm font-medium'
+                                >
                                     Time
                                 </label>
                                 <input
-                                    id="session-time"
+                                    id='session-time'
                                     type='time'
                                     value={newSession.time}
                                     onChange={(e) =>
@@ -416,73 +426,100 @@ export default function CourseSessionPage() {
                                     className='w-full border p-2 rounded transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
                                 />
                             </div>
-                            <div className="space-y-2">
-                                <label className="block text-sm font-medium">
+                            <div className='space-y-2'>
+                                <label className='block text-sm font-medium'>
                                     Duration
                                 </label>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-1">
-                                        <label htmlFor="duration-hours" className="text-xs text-muted-foreground">
+                                <div className='grid grid-cols-2 gap-4'>
+                                    <div className='space-y-1'>
+                                        <label
+                                            htmlFor='duration-hours'
+                                            className='text-xs text-muted-foreground'
+                                        >
                                             Hours
                                         </label>
-                                        <div className="flex">
+                                        <div className='flex'>
                                             <input
-                                                id="duration-hours"
-                                                type="number"
-                                                min="0"
-                                                value={newSession.duration.hours}
+                                                id='duration-hours'
+                                                type='number'
+                                                min='0'
+                                                value={
+                                                    newSession.duration.hours
+                                                }
                                                 onChange={(e) =>
                                                     setNewSession({
                                                         ...newSession,
                                                         duration: {
                                                             ...newSession.duration,
-                                                            hours: parseInt(e.target.value) || 0,
+                                                            hours:
+                                                                parseInt(
+                                                                    e.target
+                                                                        .value,
+                                                                ) || 0,
                                                         },
                                                     })
                                                 }
-                                                className="w-full border p-2 rounded-l transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                                className='w-full border p-2 rounded-l transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
                                             />
-                                            <div className="bg-muted flex items-center px-3 rounded-r border border-l-0 transition-colors duration-300 dark:bg-gray-600 dark:border-gray-500">
-                                                <span className="text-sm">hr</span>
+                                            <div className='bg-muted flex items-center px-3 rounded-r border border-l-0 transition-colors duration-300 dark:bg-gray-600 dark:border-gray-500'>
+                                                <span className='text-sm'>
+                                                    hr
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="space-y-1">
-                                        <label htmlFor="duration-minutes" className="text-xs text-muted-foreground">
+                                    <div className='space-y-1'>
+                                        <label
+                                            htmlFor='duration-minutes'
+                                            className='text-xs text-muted-foreground'
+                                        >
                                             Minutes
                                         </label>
-                                        <div className="flex">
+                                        <div className='flex'>
                                             <input
-                                                id="duration-minutes"
-                                                type="number"
-                                                min="0"
-                                                max="59"
-                                                value={newSession.duration.minutes}
+                                                id='duration-minutes'
+                                                type='number'
+                                                min='0'
+                                                max='59'
+                                                value={
+                                                    newSession.duration.minutes
+                                                }
                                                 onChange={(e) => {
-                                                    const minutes = parseInt(e.target.value) || 0;
+                                                    const minutes =
+                                                        parseInt(
+                                                            e.target.value,
+                                                        ) || 0;
                                                     setNewSession({
                                                         ...newSession,
                                                         duration: {
                                                             ...newSession.duration,
-                                                            minutes: minutes > 59 ? 59 : minutes,
+                                                            minutes:
+                                                                minutes > 59
+                                                                    ? 59
+                                                                    : minutes,
                                                         },
                                                     });
                                                 }}
-                                                className="w-full border p-2 rounded-l transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                                className='w-full border p-2 rounded-l transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
                                             />
-                                            <div className="bg-muted flex items-center px-3 rounded-r border border-l-0 transition-colors duration-300 dark:bg-gray-600 dark:border-gray-500">
-                                                <span className="text-sm">min</span>
+                                            <div className='bg-muted flex items-center px-3 rounded-r border border-l-0 transition-colors duration-300 dark:bg-gray-600 dark:border-gray-500'>
+                                                <span className='text-sm'>
+                                                    min
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div className='space-y-2'>
-                                <label htmlFor="location-name" className="block text-sm font-medium">
+                                <label
+                                    htmlFor='location-name'
+                                    className='block text-sm font-medium'
+                                >
                                     Location Name
                                 </label>
                                 <input
-                                    id="location-name"
+                                    id='location-name'
                                     type='text'
                                     placeholder='Location Name'
                                     value={newSession.location.name}
@@ -499,12 +536,15 @@ export default function CourseSessionPage() {
                                 />
                             </div>
                             <div className='grid grid-cols-2 gap-2'>
-                                <div className="space-y-2">
-                                    <label htmlFor="location-latitude" className="block text-sm font-medium">
+                                <div className='space-y-2'>
+                                    <label
+                                        htmlFor='location-latitude'
+                                        className='block text-sm font-medium'
+                                    >
                                         Latitude
                                     </label>
                                     <input
-                                        id="location-latitude"
+                                        id='location-latitude'
                                         type='text'
                                         placeholder='Latitude'
                                         value={newSession.location.latitude}
@@ -512,12 +552,15 @@ export default function CourseSessionPage() {
                                         className='w-full border p-2 rounded transition-colors duration-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
                                     />
                                 </div>
-                                <div className="space-y-2">
-                                    <label htmlFor="location-longitude" className="block text-sm font-medium">
+                                <div className='space-y-2'>
+                                    <label
+                                        htmlFor='location-longitude'
+                                        className='block text-sm font-medium'
+                                    >
                                         Longitude
                                     </label>
                                     <input
-                                        id="location-longitude"
+                                        id='location-longitude'
                                         type='text'
                                         placeholder='Longitude'
                                         value={newSession.location.longitude}
@@ -536,11 +579,14 @@ export default function CourseSessionPage() {
                                 </Button>
                             </div>
                             <div className='space-y-2'>
-                                <label htmlFor="attendance-type" className="block text-sm font-medium">
+                                <label
+                                    htmlFor='attendance-type'
+                                    className='block text-sm font-medium'
+                                >
                                     Attendance Method
                                 </label>
                                 <select
-                                    id="attendance-type"
+                                    id='attendance-type'
                                     value={newSession.attendance_type}
                                     onChange={(e) =>
                                         setNewSession({
@@ -555,6 +601,9 @@ export default function CourseSessionPage() {
                                     </option>
                                     <option value='student_based'>
                                         Student Based
+                                    </option>
+                                    <option value='hybrid'>
+                                        Hybrid (Both)
                                     </option>
                                 </select>
                             </div>
@@ -578,9 +627,7 @@ export default function CourseSessionPage() {
                                         </Tooltip>
                                     </TooltipProvider>
                                 </div>
-                                <Select
-                                    onValueChange={handleHallSizeChange}
-                                >
+                                <Select onValueChange={handleHallSizeChange}>
                                     <SelectTrigger className='w-full'>
                                         <SelectValue placeholder='Select hall size' />
                                     </SelectTrigger>
@@ -588,10 +635,7 @@ export default function CourseSessionPage() {
                                         {Object.entries(
                                             hallSizeRecommendations,
                                         ).map(([key, value]) => (
-                                            <SelectItem
-                                                key={key}
-                                                value={key}
-                                            >
+                                            <SelectItem key={key} value={key}>
                                                 {value.size}
                                             </SelectItem>
                                         ))}
@@ -611,25 +655,20 @@ export default function CourseSessionPage() {
                                                 <TooltipContent>
                                                     <div className='space-y-2'>
                                                         <p className='font-medium'>
-                                                            Recommended
-                                                            Ranges:
+                                                            Recommended Ranges:
                                                         </p>
                                                         <ul className='text-sm'>
                                                             <li>
-                                                                Small Hall:
-                                                                20m
+                                                                Small Hall: 20m
                                                             </li>
                                                             <li>
-                                                                Medium Hall:
-                                                                35m
+                                                                Medium Hall: 35m
                                                             </li>
                                                             <li>
-                                                                Large Hall:
-                                                                50m
+                                                                Large Hall: 50m
                                                             </li>
                                                             <li>
-                                                                Auditorium:
-                                                                75m
+                                                                Auditorium: 75m
                                                             </li>
                                                         </ul>
                                                     </div>
@@ -675,10 +714,7 @@ export default function CourseSessionPage() {
                                         Coverage area: ~
                                         {Math.round(
                                             Math.PI *
-                                                Math.pow(
-                                                    newSession.radius,
-                                                    2,
-                                                ),
+                                                Math.pow(newSession.radius, 2),
                                         )}
                                         m²
                                     </div>
@@ -744,7 +780,13 @@ export default function CourseSessionPage() {
                                                     {session.location.name}
                                                 </td>
                                                 <td className='p-3 dark:text-white'>
-                                                    {session.attendance_type}
+                                                    {session.attendance_type ===
+                                                    'face_recognition'
+                                                        ? 'Lecturer Based'
+                                                        : session.attendance_type ===
+                                                            'student_based'
+                                                          ? 'Student Based'
+                                                          : 'Hybrid (Both)'}
                                                 </td>
                                                 <td className='p-3 dark:text-white'>
                                                     {session.location.radius}{' '}
