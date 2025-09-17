@@ -213,6 +213,11 @@ export default function AttendanceManagementPage() {
                     type: blob.type,
                 });
 
+                // Show processing message
+                setSuccessMessage(
+                    'Processing attendance. This may take a moment...',
+                );
+
                 const response = await markAttendanceWithFace(
                     selectedCourseId,
                     selectedSession._id,
@@ -222,16 +227,46 @@ export default function AttendanceManagementPage() {
 
                 if (response.success) {
                     setSuccessMessage(response.message);
+                    setCaptureError(null);
                 } else {
                     setCaptureError(response.message);
+                    setSuccessMessage(null);
                 }
                 setIsCameraActive(false);
             } catch (err) {
+                console.error('Error processing attendance:', err);
                 const errorMessage =
                     err instanceof Error
                         ? err.message
                         : 'Failed to process attendance';
-                setCaptureError(errorMessage);
+
+                // Show more user-friendly error message
+                if (
+                    errorMessage.includes('timeout') ||
+                    errorMessage.includes('took too long')
+                ) {
+                    setCaptureError(
+                        'Request timed out. The server is taking too long to respond. Please try again or contact support if the issue persists.',
+                    );
+                } else if (
+                    errorMessage.includes('network') ||
+                    errorMessage.includes('connection')
+                ) {
+                    setCaptureError(
+                        'Network connection issue. Please check your internet connection and try again.',
+                    );
+                } else if (errorMessage.includes('No face detected')) {
+                    setCaptureError(
+                        'No face was detected in the image. Please ensure proper lighting and positioning, then try again.',
+                    );
+                } else if (errorMessage.includes('Student not enrolled')) {
+                    setCaptureError(
+                        'Student not enrolled in this course. Please check enrollment status.',
+                    );
+                } else {
+                    setCaptureError(errorMessage);
+                }
+
                 setSuccessMessage(null);
             }
         },

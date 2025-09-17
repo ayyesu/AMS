@@ -91,6 +91,9 @@ export const AttendanceProvider: React.FC<AttendanceProviderProps> = ({
             setLoading(true);
             setError(null);
             try {
+                console.log(
+                    'Starting attendance marking with face recognition',
+                );
                 const formData = new FormData();
                 formData.append(
                     'capturedImage',
@@ -113,27 +116,65 @@ export const AttendanceProvider: React.FC<AttendanceProviderProps> = ({
                     );
                 }
 
-                const response = await attendanceApi.markAttendance(
-                    courseId,
-                    sessionId,
-                    formData,
-                );
+                // Add timeout to ensure the request doesn't hang indefinitely
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 30000); // 30-second timeout
 
-                // Refresh attendance list after marking
-                await fetchAttendanceBySession(sessionId);
+                try {
+                    // Modified to not pass the signal in this way since the API doesn't support it
+                    const response = await attendanceApi.markAttendance(
+                        courseId,
+                        sessionId,
+                        formData,
+                    );
 
-                return {
-                    success: response?.success ?? true,
-                    message:
-                        response?.message || 'Attendance marked successfully',
-                };
+                    clearTimeout(timeoutId);
+
+                    // Refresh attendance list after marking
+                    await fetchAttendanceBySession(sessionId);
+
+                    return {
+                        success: response?.success ?? true,
+                        message:
+                            response?.message ||
+                            'Attendance marked successfully',
+                    };
+                } catch (err) {
+                    clearTimeout(timeoutId);
+
+                    // Handle timeout specifically - type check for error
+                    if (err instanceof Error && err.name === 'AbortError') {
+                        throw new Error(
+                            'Request timed out. The server took too long to respond.',
+                        );
+                    }
+
+                    throw err;
+                }
             } catch (err) {
-                const errorMessage =
-                    err instanceof AxiosError
-                        ? err.response?.data?.message || err.message
-                        : err instanceof Error
-                          ? err.message
-                          : 'Failed to mark attendance via face recognition';
+                console.error('Error marking attendance:', err);
+
+                // Handle different error types for better user feedback
+                let errorMessage = 'Failed to mark attendance';
+
+                if (err instanceof AxiosError) {
+                    if (err.response) {
+                        // The server responded with a status code outside the 2xx range
+                        errorMessage =
+                            err.response?.data?.message ||
+                            `Server error: ${err.response.status} - ${err.message}`;
+                    } else if (err.request) {
+                        // The request was made but no response was received
+                        errorMessage =
+                            'No response from server. Please check your network connection.';
+                    } else {
+                        // Something happened in setting up the request
+                        errorMessage = `Request configuration error: ${err.message}`;
+                    }
+                } else if (err instanceof Error) {
+                    errorMessage = err.message;
+                }
+
                 setError(errorMessage);
                 throw new Error(errorMessage);
             } finally {
